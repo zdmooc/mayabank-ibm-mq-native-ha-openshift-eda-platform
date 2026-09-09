@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: payment-auth-negative-
+  namespace: mayabank-mq-local
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 120
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        mayabank-role: mq-client
+    spec:
+      restartPolicy: Never
+      serviceAccountName: payments
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: payments
+          image: image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0
+          imagePullPolicy: Always
+          args: [auth-negative]
+          env:
+            - name: MQ_HOST
+              value: mq
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: credentials
+              mountPath: /run/secrets
+              readOnly: true
+      volumes:
+        - name: credentials
+          secret:
+            secretName: mq-app-credentials
