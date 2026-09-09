@@ -23,6 +23,7 @@ Le rôle image-puller est accordé uniquement au service account payments dans l
 
 Secret mq-app-credentials généré via OpenSSL, conservé dans Kubernetes.
 L'image MQ Developer utilise MQ_DEV=true, MQ_CONNAUTH_USE_HTP=true et /run/secrets/mqAppPassword.
+Les clients Java montent explicitement la clé mqAppPassword dans /etc/mayabank/mq ; MQ_PASSWORD_FILE indique le fichier à lire. Le montage du serveur MQ reste /run/secrets/mqAppPassword.
 Le canal DEV.APP.SVRCONN exige CHCKCLNT(REQUIRED). Droits app limités aux queues de paiement ajoutées, mais les defaults Developer créent aussi DEV.* : ce n'est pas le modèle de sécurité cible production.
 Les deux clients partagent app pour ce premier lot ; séparation producteur/consommateur et Vault prévues ensuite.
 Pas de console admin ni Route. Service MQ ClusterIP uniquement.
@@ -36,7 +37,7 @@ Producteur : message persistant, commit, attente de réponse par JMSCorrelationI
 Consommateur : consommation et émission de réponse persistante dans la même session transactionnelle MQ, puis commit.
 Réponse avec expiration d'une heure ; requête sans expiration.
 Contrat v1 : identifiant UUID, montant positif <= 1 000 000 EUR, deux décimales maximum.
-Validation locale : six tests JUnit réussis avec compilation Java 17 ECJ ; exécution Maven/build image et intégration MQ sur CRC en attente.
+Validation locale : six tests JUnit réussis avec compilation Java 17 ECJ ; image construite et poussée sur CRC selon les logs fournis. Intégration JMS encore en attente.
 Un mécanisme de retries/backout applicatif est implémenté mais pas encore validé en intégration. Le provider JMS peut aussi utiliser BOQNAME/BOTHRESH : ne pas revendiquer une trajectoire poison avant test réel.
 Le Deployment sans sonde applicative ne prouve pas une connexion MQ : seuls les Jobs et logs constituent la preuve du parcours.
 
@@ -71,6 +72,8 @@ Une relecture smoke bindings via scripts/local-crc/verify.sh reste possible.
 - Relever CPU/RAM et espace disque après build ; les images consomment le stockage partagé CRC.
 
 ## Diagnostic
+
+Incident du 9 septembre 2026 : NoSuchFileException côté Java pour /run/secrets/mqAppPassword malgré une clé présente et un montage déclaré ; même Secret lisible côté MQ. La cause précise dans le conteneur Java reste non démontrée. Correctif : répertoire applicatif dédié /etc/mayabank/mq, projection explicite de la clé et chemin configurable. Reconstruire l'image et recréer les Jobs avec deploy.sh ; validation sur CRC requise. Aucune rotation du Secret nécessaire.
 
 ~~~bash
 oc -n mayabank-mq-build get builds
