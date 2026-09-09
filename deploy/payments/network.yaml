@@ -64,8 +64,8 @@ spec:
           port: 53
         - protocol: TCP
           port: 53
-        # Ports cibles nommés du Service dns-default OpenShift.
+        # Port cible 5353 confirmé dans l'EndpointSlice DNS de CRC.
         - protocol: UDP
-          port: dns
+          port: 5353
         - protocol: TCP
-          port: dns-tcp
+          port: 5353
