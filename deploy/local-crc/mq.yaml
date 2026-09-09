@@ -1,0 +1,129 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mayabank-mq-local
+  labels:
+    app.kubernetes.io/part-of: mayabank-mq
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mq
+  namespace: mayabank-mq-local
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mq-data
+  namespace: mayabank-mq-local
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: crc-csi-hostpath-provisioner
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mq-config
+  namespace: mayabank-mq-local
+data:
+  20-mayabank.mqsc: |
+    DEFINE QLOCAL(PAYMENT.DLQ) DEFPSIST(YES) MAXDEPTH(1000) REPLACE
+    ALTER QMGR DEADQ(PAYMENT.DLQ)
+    DEFINE QLOCAL(PAYMENT.BACKOUT.Q) DEFPSIST(YES) MAXDEPTH(1000) REPLACE
+    DEFINE QLOCAL(PAYMENT.REQUEST.Q) DEFPSIST(YES) MAXDEPTH(1000) BOQNAME(PAYMENT.BACKOUT.Q) BOTHRESH(3) REPLACE
+    DEFINE QLOCAL(PAYMENT.RESPONSE.Q) DEFPSIST(YES) MAXDEPTH(1000) REPLACE
+    DEFINE QLOCAL(LAB.SMOKE.Q) DEFPSIST(YES) MAXDEPTH(100) REPLACE
+    DEFINE QLOCAL(LAB.RECOVERY.Q) DEFPSIST(YES) MAXDEPTH(100) REPLACE
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mq-deny-network
+  namespace: mayabank-mq-local
+spec:
+  podSelector: {}
+  policyTypes: [Ingress, Egress]
+  ingress: []
+  egress: []
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mq
+  namespace: mayabank-mq-local
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mayabank-mq
+  template:
+    metadata:
+      labels:
+        app: mayabank-mq
+    spec:
+      serviceAccountName: mq
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 120
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: mq
+          image: icr.io/ibm-messaging/mq:9.4.5.1-r1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: LICENSE
+              value: accept
+            - name: MQ_QMGR_NAME
+              value: QM.MAYABANK
+            - name: MQ_DEV
+              value: "false"
+            - name: MQ_ENABLE_EMBEDDED_WEB_SERVER
+              value: "false"
+            - name: MQ_ENABLE_METRICS
+              value: "false"
+            - name: MQ_LOGGING_CONSOLE_FORMAT
+              value: json
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: "1"
+              memory: 2Gi
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          startupProbe:
+            exec:
+              command: [chkmqready]
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 60
+          readinessProbe:
+            exec:
+              command: [chkmqready]
+            periodSeconds: 10
+            timeoutSeconds: 5
+          volumeMounts:
+            - name: data
+              mountPath: /mnt/mqm
+            - name: config
+              mountPath: /etc/mqm/20-mayabank.mqsc
+              subPath: 20-mayabank.mqsc
+              readOnly: true
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: mq-data
+        - name: config
+          configMap:
+            name: mq-config
