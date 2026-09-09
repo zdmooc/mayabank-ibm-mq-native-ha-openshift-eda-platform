@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
+# oc.exe doit convertir les chemins des fichiers locaux sous Git Bash.
+case "${OSTYPE:-}" in
+  msys*|cygwin*) unset MSYS_NO_PATHCONV MSYS2_ARG_CONV_EXCL ;;
+esac
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 bash "$root/scripts/local-crc/preflight.sh"
 oc -n mayabank-mq-local get deployment mq >/dev/null
