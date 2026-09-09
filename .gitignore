@@ -1,0 +1,40 @@
+# Secrets et accès
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+kubeconfig*
+pull-secret*
+credentials*.json
+service-account*.json
+install-config.yaml
+auth/
+
+# Terraform et installateur
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+!*.tfvars.example
+crash.log
+**/.openshift_install*
+terraform.rc
+.terraformrc
+
+# Builds et fichiers temporaires
+**/target/
+*.class
+*.war
+*.ear
+*.zip
+*.bak
+.DS_Store
+Thumbs.db
+
+# Résultats bruts à expurger avant publication
+evidence/raw/
