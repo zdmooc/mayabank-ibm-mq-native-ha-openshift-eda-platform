@@ -64,3 +64,8 @@ spec:
           port: 53
         - protocol: TCP
           port: 53
+        # Ports cibles nommés du Service dns-default OpenShift.
+        - protocol: UDP
+          port: dns
+        - protocol: TCP
+          port: dns-tcp
