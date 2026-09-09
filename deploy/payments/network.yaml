@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: payments
+  namespace: mayabank-mq-local
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mq
+  namespace: mayabank-mq-local
+spec:
+  selector:
+    app: mayabank-mq
+  ports:
+    - name: mq
+      port: 1414
+      targetPort: 1414
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-payment-clients-to-mq
+  namespace: mayabank-mq-local
+spec:
+  podSelector:
+    matchLabels:
+      app: mayabank-mq
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              mayabank-role: mq-client
+      ports:
+        - protocol: TCP
+          port: 1414
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-payments-mq-and-dns
+  namespace: mayabank-mq-local
+spec:
+  podSelector:
+    matchLabels:
+      mayabank-role: mq-client
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: mayabank-mq
+      ports:
+        - protocol: TCP
+          port: 1414
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: openshift-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
