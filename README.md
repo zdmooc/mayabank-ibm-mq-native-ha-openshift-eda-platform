@@ -2,7 +2,7 @@
 
 POC personnel de modernisation du messaging bancaire : partir des labs WAS/JMS/MDB existants, construire un parcours paiement reproductible sur OpenShift Local, puis valider IBM MQ Native HA sur un cluster OpenShift multi-nœuds GCP.
 
-**État : lot 01 documentaire. Aucun déploiement ni test de cette nouvelle plateforme n'a été exécuté.** Le dépôt ne contient pas encore de manifests de déploiement ni de modules Terraform. Aucun environnement de production client n'est reproduit.
+**État : cadrage publié et premier essai MQ local implémenté ; exécution CRC en attente.** Manifeste mono-instance et scripts disponibles ; aucun module Terraform livré. Syntaxe Bash/YAML contrôlée, sans validation serveur ni démarrage MQ ici. Aucun environnement de production client n'est reproduit.
 
 ## Deux profils
 
@@ -10,6 +10,10 @@ POC personnel de modernisation du messaging bancaire : partir des labs WAS/JMS/M
 |---|---|---|
 | local-crc | MQ mono-instance, paiement, erreurs, sécurité, CI/CD et supervision | CRC mono-nœud ne démontre pas la survie à une panne de nœud |
 | gcp-native-ha | Trois instances MQ sur trois workers distincts ; tests de panne et reconnexion | Accès, versions, licences, stockage et budget à valider avant déploiement |
+
+## Essai local prêt à exécuter
+
+Consulter le [guide MQ local](docs/07-deploiement-local.md), puis lancer les scripts depuis le clone. Image Developer 9.4.5.1-r1 ; sans opérateur pour ce premier essai. Support officiel opérateur/OpenShift 4.22.7 non confirmé. Aucun test Native HA exécuté.
 
 ## Commencer
 
