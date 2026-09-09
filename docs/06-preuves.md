@@ -13,9 +13,9 @@ Un lot peut avoir sa procédure documentée sans que sa capacité technique soit
 | Capacité | État initial | Preuve actuelle |
 |---|---|---|
 | Cadrage et architecture | Documenté | Lot 01 |
-| Qualification du CRC actuel | Prévu | Aucune |
-| MQ mono-instance sur CRC | Prévu | Aucune |
-| Paiement bout en bout nouveau dépôt | Prévu | Aucune |
+| Qualification du CRC actuel | Validé au 9 septembre 2026 | Sorties utilisateur, voir evidence/2026-09-09-crc-mq.md |
+| MQ mono-instance sur CRC | Testé et validé pour le socle local | Smoke bindings + redémarrage contrôlé ; voir evidence/2026-09-09-crc-mq.md |
+| Paiement bout en bout nouveau dépôt | Implémenté, intégration en attente | Java compilé ; six tests de contrat PASS ; pas de résultat JMS réseau anticipé |
 | Idempotence et poison/backout | Prévu | Aucune |
 | Sécurité et rotation | Prévu | Aucune |
 | GitOps/CI/CD | Prévu | Aucune |
@@ -49,3 +49,7 @@ Une bascule HA n'est pas une preuve de PRA inter-région.
 Avant tests : projet personnel en cours ; architecture documentée, validation à venir.
 Après tests : citer uniquement les profils et capacités exécutés, avec lien vers preuves.
 Pas de mention production, RPO nul ou RTO garanti sans protocole et résultats qui la justifient.
+
+## Mise à jour du 9 septembre 2026
+
+Voir [preuves utilisateur MQ](../evidence/2026-09-09-crc-mq.md). Le socle est éprouvé sur CRC ; Native HA reste prévu. Le code de retries du nouveau consommateur n'est pas encore une preuve d'intégration backout/idempotence.
