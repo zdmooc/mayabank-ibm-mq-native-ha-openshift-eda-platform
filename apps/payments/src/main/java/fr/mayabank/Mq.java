@@ -17,7 +17,11 @@ final class Mq {
         factory.setChannel("DEV.APP.SVRCONN");
         factory.setTransportType(WMQConstants.WMQ_CM_CLIENT);
         factory.setBooleanProperty(WMQConstants.USER_AUTHENTICATION_MQCSP, true);
-        String password = Files.readString(Path.of("/run/secrets/mqAppPassword")).strip();
+        Path passwordFile = Path.of(env("MQ_PASSWORD_FILE", "/etc/mayabank/mq/mqAppPassword"));
+        if (!Files.isReadable(passwordFile))
+            throw new java.io.IOException("MQ credential file missing or unreadable: " + passwordFile);
+        String password = Files.readString(passwordFile).strip();
+        if (password.isEmpty()) throw new java.io.IOException("MQ credential file is empty");
         if (wrongPassword) password = "deliberately-invalid-" + java.util.UUID.randomUUID();
         return factory.createConnection("app", password);
     }
