@@ -29,6 +29,8 @@ spec:
           env:
             - name: MQ_HOST
               value: mq
+            - name: MQ_PASSWORD_FILE
+              value: /etc/mayabank/mq/mqAppPassword
           resources:
             requests:
               cpu: 100m
@@ -43,9 +45,12 @@ spec:
               drop: [ALL]
           volumeMounts:
             - name: credentials
-              mountPath: /run/secrets
+              mountPath: /etc/mayabank/mq
               readOnly: true
       volumes:
         - name: credentials
           secret:
             secretName: mq-app-credentials
+            items:
+              - key: mqAppPassword
+                path: mqAppPassword
