@@ -90,6 +90,13 @@ spec:
               value: "true"
             - name: MQ_CONNAUTH_USE_HTP
               value: "true"
+            # Local Developer compatibility: ensure credentials exist at startup.
+            # IBM supports this legacy variable; value remains in Kubernetes Secret.
+            - name: MQ_APP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mq-app-credentials
+                  key: mqAppPassword
             - name: MQ_ENABLE_EMBEDDED_WEB_SERVER
               value: "false"
             - name: MQ_ENABLE_METRICS
