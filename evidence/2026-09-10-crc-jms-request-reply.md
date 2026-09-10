@@ -37,6 +37,21 @@ Le tail du processeur contient également des lignes JMSWMQ2008 précédant READ
 - Simulation locale, TCP interne sans TLS ; aucun paiement bancaire réel.
 - CRC à un nœud : aucune preuve Native HA ou de tolérance à la perte d'un nœud.
 - Ni charge, ni idempotence durable, ni retry/backout/DLQ validés par ce test.
-- Le correctif d'ordre HTP/OAM dans autocfg/base_qm.ini a été appliqué manuellement auparavant. Son automatisation et la reproductibilité sur un volume neuf restent à finaliser.
+- Le correctif d'ordre HTP/OAM dans autocfg/base_qm.ini a été appliqué manuellement auparavant. Son automatisation a ensuite été ajoutée dans scripts/payments/ensure-htp-order.sh. La validation complète sur un volume neuf reste à effectuer.
 - BROWSE figure dans le manifeste Git pour les files REQUEST et RESPONSE. La commande ci-dessus l'applique immédiatement à REQUEST dans le gestionnaire actif ; un git pull seul n'applique pas le ConfigMap au cluster.
-- Retirer DEBUG du Deployment MQ après diagnostic, attendre sa disponibilité et rejouer ce test après redémarrage contrôlé.
+- DEBUG retiré et test après redémarrage réussi : voir ci-dessous.
+
+## Deuxième exécution : DEBUG retiré et redémarrage contrôlé
+
+Sortie fournie par l'utilisateur après `oc set env deployment/mq DEBUG-`, attente du rollout et lancement de verify.sh :
+
+```text
+PASS: wrong password rejected (MQRC 2035)
+ACCEPTED paymentId=50e6a15c-0a48-40b1-8aa4-e327c627e89a
+PASS: authenticated JMS request/reply paymentId=50e6a15c-0a48-40b1-8aa4-e327c627e89a
+READY: authenticated MQ connection; simulation only
+SIMULATED_PROCESSED paymentId=50e6a15c-0a48-40b1-8aa4-e327c627e89a
+PASS lot paiement : refus mauvais mot de passe puis demande/réponse JMS.
+```
+
+Le processeur a journalisé JMSWMQ2002 puis JMSWMQ0018 pendant l'interruption avant le nouveau READY. La reconnexion et un nouvel aller-retour sont validés après redémarrage ; aucun RTO n'a été mesuré. Ce test réutilise le PVC existant et ne prouve pas une installation neuve.
