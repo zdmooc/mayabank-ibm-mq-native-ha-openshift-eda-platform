@@ -2,7 +2,9 @@
 
 POC personnel de modernisation du messaging bancaire : partir des labs WAS/JMS/MDB existants, construire un parcours paiement reproductible sur OpenShift Local, puis valider IBM MQ Native HA sur un cluster OpenShift multi-nœuds GCP.
 
-**État : MQ mono-instance exécuté sur CRC, smoke bindings et persistance après redémarrage validés par sorties utilisateur.** Lot paiement Java/JMS livré pour essai, six tests de contrat réussis localement. Aucun module Terraform livré. Aucun environnement de production client n'est reproduit.
+**État au 10 septembre 2026 : MQ mono-instance, persistance, paiement JMS authentifié et reprise après redémarrage validés sur CRC par sorties utilisateur.** Contrôle automatisé HTP validé sur la configuration déjà corrigée. Installation sur volume neuf et Native HA non validées ; aucun module Terraform livré.
+
+**Reprendre ici : [point de pause et checklist complète](docs/10-reprise-et-reste-a-faire.md).** Prochain lot : message invalide, retry/backout, puis paiement valide.
 
 ## Deux profils
 
@@ -13,9 +15,9 @@ POC personnel de modernisation du messaging bancaire : partir des labs WAS/JMS/M
 
 ## Parcours paiement Java/JMS — nouveau lot
 
-[Guide de déploiement paiement](docs/08-paiement-jms.md) : Job payment-order, service payment-processing, secret MQ et test de refus du mauvais mot de passe. Exécution CRC de ce lot en attente. [Preuves MQ déjà acquises](evidence/2026-09-09-crc-mq.md).
+[Guide de déploiement paiement](docs/08-paiement-jms.md) : Job payment-order, service payment-processing, secret MQ et test de refus du mauvais mot de passe. Exécution CRC du parcours valide réussie. [Preuves JMS et reprise](evidence/2026-09-10-crc-jms-request-reply.md) ; [preuves MQ initiales](evidence/2026-09-09-crc-mq.md).
 
-Depuis le clone : git pull --ff-only, puis bash scripts/payments/deploy.sh. Ne pas réappliquer le profil initial après activation du lot paiement.
+Installation du lot : `bash scripts/payments/deploy.sh`. Pour reprendre une installation déjà validée, suivre le point de pause ci-dessus : contrôle HTP puis `bash scripts/payments/verify.sh`, sans reconstruction inutile. Ne pas réappliquer le profil initial après activation du lot paiement.
 
 ## Essai local initial
 
