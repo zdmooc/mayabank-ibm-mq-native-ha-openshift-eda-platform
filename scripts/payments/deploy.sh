@@ -30,7 +30,10 @@ if [[ -z "$(oc -n mayabank-mq-local get secret mq-app-credentials --ignore-not-f
   trap - EXIT
 fi
 oc apply -f "$root/deploy/payments/mq-connected.yaml"
+# Le montage ConfigMap subPath nécessite un nouveau Pod pour relire MQSC.
+oc -n mayabank-mq-local rollout restart deployment/mq
 oc -n mayabank-mq-local rollout status deployment/mq --timeout=600s
+bash "$root/scripts/payments/ensure-htp-order.sh"
 oc apply -f "$root/deploy/payments/network.yaml"
 oc -n mayabank-mq-build policy add-role-to-user system:image-puller system:serviceaccount:mayabank-mq-local:payments
 oc set image --local -f "$root/deploy/payments/processor.yaml" "payments=$image" -o yaml |
