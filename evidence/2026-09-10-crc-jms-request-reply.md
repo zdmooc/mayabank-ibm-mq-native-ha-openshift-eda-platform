@@ -55,3 +55,19 @@ PASS lot paiement : refus mauvais mot de passe puis demande/réponse JMS.
 ```
 
 Le processeur a journalisé JMSWMQ2002 puis JMSWMQ0018 pendant l'interruption avant le nouveau READY. La reconnexion et un nouvel aller-retour sont validés après redémarrage ; aucun RTO n'a été mesuré. Ce test réutilise le PVC existant et ne prouve pas une installation neuve.
+
+## Troisième exécution : contrôle automatisé HTP sur CRC
+
+Commit testé : a27fa6a. Sortie fournie par l'utilisateur après ensure-htp-order.sh puis verify.sh :
+
+```text
+Base HTP/OAM déjà correcte.
+PASS : HTP précède OAM dans qm.ini.
+PASS: wrong password rejected (MQRC 2035)
+ACCEPTED paymentId=ff2f23cd-0acf-402e-88de-40cb6934e90b
+PASS: authenticated JMS request/reply paymentId=ff2f23cd-0acf-402e-88de-40cb6934e90b
+SIMULATED_PROCESSED paymentId=ff2f23cd-0acf-402e-88de-40cb6934e90b
+PASS lot paiement : refus mauvais mot de passe puis demande/réponse JMS.
+```
+
+Le chemin « déjà correct » du script est validé sur le cluster : aucun redémarrage demandé et nouveau paiement réussi. Le tail contient toujours les anciens messages d'erreur et paiements des exécutions précédentes ; ils ne constituent pas de nouveaux échecs de ce test. La branche de réparation automatique sur une base OAM seule a été testée sur fichiers simulés, mais pas encore sur un gestionnaire neuf. Cette preuve ne valide pas encore la reproductibilité complète depuis un volume neuf.
