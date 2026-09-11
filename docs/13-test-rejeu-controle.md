@@ -1,6 +1,6 @@
 # Rejeu contrôlé sur files dédiées
 
-Statut : code compilé Java 17 ; extraction MQDLH, liste de destinations autorisées, transfert UTF-8 et rejet de contenu altéré vérifiés localement ; syntaxe Bash contrôlée. Exécution CRC à réaliser.
+Statut : code compilé Java 17 ; extraction MQDLH, liste de destinations autorisées, transfert UTF-8 et rejet de contenu altéré vérifiés localement ; syntaxe Bash contrôlée. Exécution CRC réussie le 11 septembre 2026 : [preuve](../evidence/2026-09-11-crc-rejeu-controle.md).
 
 ## Commandes
 
