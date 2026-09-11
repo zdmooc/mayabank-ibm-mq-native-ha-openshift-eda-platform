@@ -14,8 +14,8 @@ Point de pause demandé par Zidane. Reprendre ici à la prochaine séance. Aucun
 - [x] Reconnexion du processeur et nouveau paiement après redémarrage MQ, DEBUG retiré.
 - [x] Script ensure-htp-order.sh exécuté sur configuration déjà corrigée : aucune modification ni demande de redémarrage, puis nouveau PASS JMS.
 
-Dernier paiement validé : `b15afcbc-e510-4c58-8d24-60e940381355`.
-Dernière image publiée : `sha256:12031aebad96d73f79c90d7e0fe3da272ce0b5d8607e5790a92ba3bafc4f6b16`. Le dernier extrait ne donne pas le commit exact du clone.
+Dernier paiement validé : `821845f3-f72f-411f-a72e-e2c53be9ab7f`.
+Dernière image publiée : `sha256:95fed63b98f7e54cda973acca051ac071e380e6c07b5b6dd352dea6c80ac1894`. Le dernier extrait ne donne pas le commit exact du clone.
 Preuves : [MQ local](../evidence/2026-09-09-crc-mq.md), [JMS et reprise](../evidence/2026-09-10-crc-jms-request-reply.md).
 
 **Non validés : installation complète sur volume neuf, Native HA, TLS/mTLS, idempotence durable, DLQ automatique par canal, charge et PRA.**
@@ -64,7 +64,7 @@ bash scripts/payments/verify.sh
 Attendre le PASS du paiement avant de développer le lot suivant. Les options strictes restent dans les scripts ; ne pas coller `set -eu` dans le shell interactif.
 Ne pas relancer le build complet pour ce simple contrôle.
 
-## 4. Retry/backout et DLQ applicative terminés ; prochain lot rejeu
+## 4. Retry/backout, DLQ applicative et rejeu validés ; prochain lot idempotence
 
 - [x] Message invalide avec corrélation unique.
 - [x] Deux retries observés ; backout applicatif à la troisième livraison.
@@ -80,14 +80,24 @@ Guide : [retry/backout](11-test-retry-backout.md). Preuve : [exécution CRC](../
 - [x] Paiement valide après le scénario DLQ.
 - [x] Preuve DLQ enregistrée.
 
-Prochain lot : rejeu contrôlé.
+Rejeu contrôlé validé : [preuve CRC](../evidence/2026-09-11-crc-rejeu-controle.md).
 
-- [ ] Préparer un message et une destination de reprise dédiés au test.
-- [ ] Sélectionner précisément le message, vérifier son en-tête et sa destination autorisée.
-- [ ] Prévoir mode inspection, traçabilité et opérations transactionnelles.
-- [ ] Vérifier le contenu reçu après rejeu et l'état de la source.
-- [ ] Tester l'échec de destination sans perte du message source.
-- [ ] Poursuivre avec la persistance métier et l'idempotence durable.
+- [x] Sonde et files de rejeu dédiées.
+- [x] Sélection précise, validation MQDLH et destination autorisée.
+- [x] Phase d'inspection non destructive ; transaction source/cible/audit.
+- [x] Échec 2051 et rollback conservant le message source original.
+- [x] Transfert réussi, cible/audit vérifiés, source absente et second GET=2033.
+- [x] Paiement valide après le scénario.
+- [ ] Mode dry-run autonome et outil de rejeu d'exploitation : non livrés.
+
+Prochain lot : persistance métier et idempotence durable.
+
+- [ ] Vérifier les ressources CRC avant d'ajouter une base dédiée, sans utiliser la base Wero.
+- [ ] Définir une clé métier unique et le comportement en cas de même identifiant avec contenu différent.
+- [ ] Conserver le résultat métier et la trace de traitement durablement.
+- [ ] Publier deux fois le même paiement : vérifier un seul effet métier.
+- [ ] Redémarrer le processeur et vérifier que la détection de doublon persiste.
+- [ ] Tester l'interruption entre commit métier et acquittement MQ ; documenter les transactions et limites.
 
 Le message DLQ existant contient une sonde DLQ-PROBE, pas un paiement : ne pas le réinjecter aveuglément dans PAYMENT.REQUEST.Q. Conserver les preuves existantes.
 
@@ -107,7 +117,7 @@ Le message DLQ existant contient une sonde DLQ-PROBE, pas un paiement : ne pas l
 - [x] Lot retry/backout terminé et testé sur CRC.
 - [x] DLQ applicative testée ; différence avec backout documentée.
 - [ ] Tester séparément une DLQ automatique via canal MQ.
-- [ ] Implémenter le rejeu contrôlé avec traçabilité.
+- [x] Rejeu contrôlé avec audit validé sur files dédiées (outil générique non livré).
 - [ ] Ajouter une persistance métier dédiée et une idempotence durable.
 - [ ] Tester doublons, interruption entre traitement et acquittement, reprise et cohérence transactionnelle.
 - [ ] Documenter les garanties réellement obtenues, sans promesse « exactly once » non démontrée.
@@ -173,4 +183,4 @@ Le CV devra distinguer « réalisé et testé », « documenté » et « prévu 
 
 ## 7. Message pour reprendre avec l'assistant
 
-> Reprends ce dépôt en lisant docs/10-reprise-et-reste-a-faire.md, le README et les preuves. Le paiement JMS authentifié et sa reprise après redémarrage sont validés sur CRC. Le contrôle HTP passe sans modification. Le lot retry/backout est aussi validé (preuve du 11 septembre). La DLQ applicative avec MQDLH 2085 est validée aussi. Commence par le rejeu contrôlé sur un scénario dédié, puis l'idempotence durable. Ne rejoue pas la sonde DLQ-PROBE comme un paiement. Préserve Wero, le PVC et les secrets. Publie une étape vérifiée dans le dépôt avec les commandes Git Bash à exécuter ; n'annonce pas de test CRC ou Native HA réussi sans sortie réelle.
+> Reprends ce dépôt en lisant docs/10-reprise-et-reste-a-faire.md, le README et les preuves. Le paiement JMS authentifié et sa reprise après redémarrage sont validés sur CRC. Le contrôle HTP passe sans modification. Le lot retry/backout est aussi validé (preuve du 11 septembre). La DLQ applicative avec MQDLH 2085 est validée aussi. Le rejeu contrôlé sur files dédiées est validé aussi (rollback 2051 et commit avec audit). Commence par la persistance métier et l'idempotence durable. Ne rejoue pas la sonde DLQ-PROBE comme un paiement. Préserve Wero, le PVC et les secrets. Publie une étape vérifiée dans le dépôt avec les commandes Git Bash à exécuter ; n'annonce pas de test CRC ou Native HA réussi sans sortie réelle.
