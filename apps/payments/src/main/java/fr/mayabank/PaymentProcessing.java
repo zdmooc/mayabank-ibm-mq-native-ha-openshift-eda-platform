@@ -29,11 +29,14 @@ final class PaymentProcessing {
                                         incoming instanceof TextMessage t ? t.getText() : "unsupported type");
                                 rejected.setJMSCorrelationID(incoming.getJMSCorrelationID());
                                 rejected.setStringProperty("failureReason", invalid.getMessage());
+                                rejected.setStringProperty("backoutOrigin", "application");
+                                rejected.setIntProperty("originalDeliveryCount", count);
                                 backout.send(rejected, DeliveryMode.PERSISTENT, 4, 0);
                                 session.commit();
-                                System.out.println("BACKOUT: invalid contract after bounded retries");
+                                System.out.println("BACKOUT correlationId=" + incoming.getJMSCorrelationID() + " deliveryCount=" + count);
                             } else {
                                 session.rollback();
+                                System.out.println("RETRY correlationId=" + incoming.getJMSCorrelationID() + " deliveryCount=" + count);
                                 Thread.sleep(1000);
                             }
                             continue;
