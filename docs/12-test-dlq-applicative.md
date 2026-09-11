@@ -1,6 +1,6 @@
 # DLQ applicative : destination inexistante et MQDLH
 
-Statut : code compilé en Java 17 ; sérialisation/désérialisation MQDLH et rejets de contenu/code erronés testés localement. Test CRC non exécuté à ce stade.
+Statut : code compilé en Java 17 ; sérialisation/désérialisation MQDLH et rejets de contenu/code erronés testés localement. Test CRC réussi le 11 septembre 2026 : [preuve d'exécution](../evidence/2026-09-11-crc-dlq-applicative.md).
 
 ## Exécuter
 
