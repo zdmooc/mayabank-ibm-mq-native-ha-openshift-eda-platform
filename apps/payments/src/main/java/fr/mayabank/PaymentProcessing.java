@@ -41,11 +41,32 @@ final class PaymentProcessing {
                             }
                             continue;
                         }
-                        TextMessage response = session.createTextMessage("SIMULATED_PROCESSED|" + payment.id());
+                        PaymentLedger.Result result;
+                        try {
+                            result = PaymentLedger.record(payment);
+                        } catch (Exception databaseFailure) {
+                            session.rollback();
+                            System.err.println("DB failure; MQ rolled back; retry in 5s; type=" + databaseFailure.getClass().getSimpleName());
+                            Thread.sleep(5000);
+                            continue;
+                        }
+                        // Explicit CRC test hook, disabled by default. Only a newly committed ID can crash once.
+                        if ("true".equals(Mq.env("MAYABANK_ENABLE_CRASH_PROBE", "false"))
+                                && incoming.propertyExists("mayabankCrashAfterDb")
+                                && incoming.getBooleanProperty("mayabankCrashAfterDb")
+                                && "NEW".equals(result.outcome())) {
+                            System.out.println("CRASH_AFTER_DB_COMMIT paymentId=" + payment.id());
+                            System.out.flush();
+                            Runtime.getRuntime().halt(75);
+                        }
+                        TextMessage response = session.createTextMessage(result.response());
+                        response.setStringProperty("idempotencyOutcome", result.outcome());
+                        response.setIntProperty("requestDeliveryCount", incoming.propertyExists("JMSXDeliveryCount")
+                                ? incoming.getIntProperty("JMSXDeliveryCount") : 1);
                         response.setJMSCorrelationID(payment.id());
                         reply.send(response, DeliveryMode.PERSISTENT, 4, 3600000);
                         session.commit();
-                        System.out.println("SIMULATED_PROCESSED paymentId=" + payment.id());
+                        System.out.println(result.outcome() + " paymentId=" + payment.id());
                     }
                 }
             } catch (JMSException failure) {

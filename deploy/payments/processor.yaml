@@ -31,6 +31,8 @@ spec:
               value: mq
             - name: MQ_PASSWORD_FILE
               value: /etc/mayabank/mq/mqAppPassword
+            - name: DB_PASSWORD_FILE
+              value: /etc/mayabank/db/password
           resources:
             requests:
               cpu: 100m
@@ -47,6 +49,9 @@ spec:
             - name: credentials
               mountPath: /etc/mayabank/mq
               readOnly: true
+            - name: db-credentials
+              mountPath: /etc/mayabank/db
+              readOnly: true
       volumes:
         - name: credentials
           secret:
@@ -54,3 +59,9 @@ spec:
             items:
               - key: mqAppPassword
                 path: mqAppPassword
+        - name: db-credentials
+          secret:
+            secretName: payments-db-credentials
+            items:
+              - key: password
+                path: password

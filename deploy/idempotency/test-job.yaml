@@ -1,0 +1,66 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: payment-idempotency-
+  namespace: mayabank-mq-local
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 300
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        mayabank-role: mq-client
+    spec:
+      restartPolicy: Never
+      serviceAccountName: payments
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: payments
+        image: image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0
+        imagePullPolicy: Always
+        args:
+        - idempotency-test
+        env:
+        - name: MQ_HOST
+          value: mq
+        - name: MQ_PASSWORD_FILE
+          value: /etc/mayabank/mq/mqAppPassword
+        - name: DB_PASSWORD_FILE
+          value: /etc/mayabank/db/password
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: credentials
+          mountPath: /etc/mayabank/mq
+          readOnly: true
+        - name: db-credentials
+          mountPath: /etc/mayabank/db
+          readOnly: true
+      volumes:
+      - name: credentials
+        secret:
+          secretName: mq-app-credentials
+          items:
+          - key: mqAppPassword
+            path: mqAppPassword
+      - name: db-credentials
+        secret:
+          secretName: payments-db-credentials
+          items:
+          - key: password
+            path: password

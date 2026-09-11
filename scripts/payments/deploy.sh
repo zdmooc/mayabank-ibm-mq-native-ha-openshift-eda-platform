@@ -8,7 +8,7 @@ root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 bash "$root/scripts/local-crc/preflight.sh"
 oc -n mayabank-mq-local get deployment mq >/dev/null
 command -v openssl >/dev/null
-echo "Lot paiement : build Java, redémarrage MQ, connexion app authentifiée en TCP interne."
+echo "Lot paiement : build Java, PostgreSQL dédié (PVC 2Gi, réserve 100m/256Mi), redémarrage MQ et processeur."
 echo "Pas de TLS dans ce lot local. Aucun accès externe. Wero reste inchangé."
 read -r -p "Taper DEPLOY-PAYMENTS : " answer
 [[ "$answer" == "DEPLOY-PAYMENTS" ]] || exit 1
@@ -29,6 +29,7 @@ if [[ -z "$(oc -n mayabank-mq-local get secret mq-app-credentials --ignore-not-f
   rm -f -- "$credential_file"
   trap - EXIT
 fi
+bash "$root/scripts/idempotency/deploy-db.sh"
 oc apply -f "$root/deploy/payments/mq-connected.yaml"
 # Le montage ConfigMap subPath nécessite un nouveau Pod pour relire MQSC.
 oc -n mayabank-mq-local rollout restart deployment/mq

@@ -90,9 +90,11 @@ Rejeu contrôlé validé : [preuve CRC](../evidence/2026-09-11-crc-rejeu-control
 - [x] Paiement valide après le scénario.
 - [ ] Mode dry-run autonome et outil de rejeu d'exploitation : non livrés.
 
-Prochain lot : persistance métier et idempotence durable.
+Lot persistance métier et idempotence durable livré, **exécution CRC encore attendue** : [guide et commandes](14-idempotence-durable.md).
 
-- [ ] Vérifier les ressources CRC avant d'ajouter une base dédiée, sans utiliser la base Wero.
+Le déploiement paiement prépare désormais PostgreSQL. Après le build/déploiement, lancer `bash scripts/idempotency/verify.sh`. Les cases de validation ci-dessous restent ouvertes jusqu’aux résultats utilisateur.
+
+- [x] Ressources CRC contrôlées : disque 63,3 / 85,29 Go, réservations CPU 81 % et mémoire 83 %. Base dédiée prévue sans accès Wero.
 - [ ] Définir une clé métier unique et le comportement en cas de même identifiant avec contenu différent.
 - [ ] Conserver le résultat métier et la trace de traitement durablement.
 - [ ] Publier deux fois le même paiement : vérifier un seul effet métier.

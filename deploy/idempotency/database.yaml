@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: payments-db-data
+  namespace: mayabank-mq-local
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-db
+  namespace: mayabank-mq-local
+spec:
+  selector:
+    app: payments-db
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-db
+  namespace: mayabank-mq-local
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: payments-db
+  template:
+    metadata:
+      labels:
+        app: payments-db
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: postgres
+          # deploy-db.sh replaces this reference with a resolved PostgreSQL 16 digest.
+          image: quay.io/sclorg/postgresql-16-c9s:latest
+          env:
+            - name: POSTGRESQL_USER
+              value: payments
+            - name: POSTGRESQL_DATABASE
+              value: payments
+            - name: POSTGRESQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: payments-db-credentials
+                  key: password
+            - name: POSTGRESQL_MAX_CONNECTIONS
+              value: '20'
+            - name: POSTGRESQL_SHARED_BUFFERS
+              value: 64MB
+            - name: POSTGRESQL_EFFECTIVE_CACHE_SIZE
+              value: 128MB
+          ports:
+            - containerPort: 5432
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          readinessProbe:
+            exec:
+              command: [sh, -c, 'pg_isready -h 127.0.0.1 -p 5432 -U payments -d payments']
+            periodSeconds: 5
+          startupProbe:
+            exec:
+              command: [sh, -c, 'pg_isready -h 127.0.0.1 -p 5432 -U payments -d payments']
+            periodSeconds: 5
+            failureThreshold: 60
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/pgsql/data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: payments-db-data
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-payments-to-db
+  namespace: mayabank-mq-local
+spec:
+  podSelector:
+    matchLabels:
+      app: payments-db
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              mayabank-role: mq-client
+      ports:
+        - protocol: TCP
+          port: 5432
+  egress: []
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-payment-db-egress
+  namespace: mayabank-mq-local
+spec:
+  podSelector:
+    matchLabels:
+      mayabank-role: mq-client
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: payments-db
+      ports:
+        - protocol: TCP
+          port: 5432
