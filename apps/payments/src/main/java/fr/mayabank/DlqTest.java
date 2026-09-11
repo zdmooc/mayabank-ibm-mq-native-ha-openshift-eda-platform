@@ -63,18 +63,7 @@ final class DlqTest {
         String body = "DLQ-PROBE|" + id;
         byte[] correlation = new byte[24];
         new SecureRandom().nextBytes(correlation);
-        String password = Files.readString(Path.of(Mq.env("MQ_PASSWORD_FILE",
-                "/etc/mayabank/mq/mqAppPassword"))).strip();
-        if (password.isEmpty()) throw new IllegalStateException("Empty MQ credential");
-        Hashtable<String, Object> props = new Hashtable<>();
-        props.put(MQConstants.HOST_NAME_PROPERTY, Mq.env("MQ_HOST", "mq"));
-        props.put(MQConstants.PORT_PROPERTY, 1414);
-        props.put(MQConstants.CHANNEL_PROPERTY, "DEV.APP.SVRCONN");
-        props.put(MQConstants.TRANSPORT_PROPERTY, MQConstants.TRANSPORT_MQSERIES_CLIENT);
-        props.put(MQConstants.USER_ID_PROPERTY, "app");
-        props.put(MQConstants.PASSWORD_PROPERTY, password);
-        props.put(MQConstants.USE_MQCSP_AUTHENTICATION_PROPERTY, true);
-        MQQueueManager manager = new MQQueueManager(QM, props);
+        MQQueueManager manager = connect();
         try {
             MQQueue dlq = manager.accessQueue("PAYMENT.DLQ",
                     MQConstants.MQOO_OUTPUT | MQConstants.MQOO_BROWSE | MQConstants.MQOO_FAIL_IF_QUIESCING);
@@ -107,4 +96,19 @@ final class DlqTest {
             } finally { dlq.close(); }
         } finally { manager.disconnect(); }
     }
+    static MQQueueManager connect() throws Exception {
+        String password = Files.readString(Path.of(Mq.env("MQ_PASSWORD_FILE",
+                "/etc/mayabank/mq/mqAppPassword"))).strip();
+        if (password.isEmpty()) throw new IllegalStateException("Empty MQ credential");
+        Hashtable<String, Object> props = new Hashtable<>();
+        props.put(MQConstants.HOST_NAME_PROPERTY, Mq.env("MQ_HOST", "mq"));
+        props.put(MQConstants.PORT_PROPERTY, 1414);
+        props.put(MQConstants.CHANNEL_PROPERTY, "DEV.APP.SVRCONN");
+        props.put(MQConstants.TRANSPORT_PROPERTY, MQConstants.TRANSPORT_MQSERIES_CLIENT);
+        props.put(MQConstants.USER_ID_PROPERTY, "app");
+        props.put(MQConstants.PASSWORD_PROPERTY, password);
+        props.put(MQConstants.USE_MQCSP_AUTHENTICATION_PROPERTY, true);
+        return new MQQueueManager(QM, props);
+    }
+
 }
