@@ -1,4 +1,4 @@
-# Reprise du POC — état au 10 septembre 2026
+# Reprise du POC — état au 11 septembre 2026
 
 Point de pause demandé par Zidane. Reprendre ici à la prochaine séance. Aucun déploiement GCP à lancer pendant la pause.
 
@@ -14,12 +14,12 @@ Point de pause demandé par Zidane. Reprendre ici à la prochaine séance. Aucun
 - [x] Reconnexion du processeur et nouveau paiement après redémarrage MQ, DEBUG retiré.
 - [x] Script ensure-htp-order.sh exécuté sur configuration déjà corrigée : aucune modification ni demande de redémarrage, puis nouveau PASS JMS.
 
-Dernier paiement validé : `ff2f23cd-0acf-402e-88de-40cb6934e90b`.
-Commit exécuté par l'utilisateur : `a27fa6a`. Les commits suivants ont enrichi la documentation.
+Dernier paiement validé : `0db22874-d82c-486c-8e70-c7a13f6e20ed`.
+Commit exécuté par l'utilisateur : `d05c1ad`. Les commits suivants ont enrichi la documentation.
 Preuves : [MQ local](../evidence/2026-09-09-crc-mq.md), [JMS et reprise](../evidence/2026-09-10-crc-jms-request-reply.md).
 
-**Non validés : installation complète sur volume neuf, Native HA, TLS/mTLS, idempotence durable, retry/backout/DLQ, charge et PRA.**
-La présence des files BACKOUT/DLQ n'est pas une preuve de leur fonctionnement.
+**Non validés : installation complète sur volume neuf, Native HA, TLS/mTLS, idempotence durable, DLQ, charge et PRA.**
+Retry/backout validés : [preuve du 11 septembre](../evidence/2026-09-11-crc-retry-backout.md). La présence de la DLQ ne prouve pas son fonctionnement.
 Le BuildConfig actuel n'est pas un pipeline Tekton. Le déploiement actuel utilise des scripts oc, pas Argo CD.
 
 ## 2. Environnement à conserver
@@ -64,21 +64,23 @@ bash scripts/payments/verify.sh
 Attendre le PASS du paiement avant de développer le lot suivant. Les options strictes restent dans les scripts ; ne pas coller `set -eu` dans le shell interactif.
 Ne pas relancer le build complet pour ce simple contrôle.
 
-## 4. Prochain lot précis : message invalide et backout
+## 4. Lot retry/backout terminé ; prochain lot DLQ
 
-À implémenter et tester à la prochaine séance, sans déclarer ces essais déjà réussis :
+- [x] Message invalide avec corrélation unique.
+- [x] Deux retries observés ; backout applicatif à la troisième livraison.
+- [x] Consultation non destructive du message rejeté et contrôle de ses propriétés.
+- [x] Aucune demande ni réponse de succès correspondante visible lors du contrôle.
+- [x] Paiement valide après le rejet.
+- [x] Code, guide et preuve publiés.
 
-- [ ] Relire PaymentProcessing.java, PaymentOrder.java, les droits MQ et les scripts actuels.
-- [ ] Ajouter un scénario qui publie un message volontairement invalide avec un identifiant unique.
-- [ ] Vérifier les tentatives et rollbacks via des logs corrélés et le compteur de livraison.
-- [ ] Distinguer le traitement applicatif du mécanisme automatique éventuel du fournisseur JMS ; vérifier le nombre réellement observé, sans supposer que BOTHRESH déplace seul le message.
-- [ ] Vérifier que le message identifié arrive dans PAYMENT.BACKOUT.Q, avec lecture non destructive si possible et droits minimaux nécessaires.
-- [ ] Vérifier qu'il n'est plus en boucle sur REQUEST et qu'aucune réponse de succès n'a été produite pour ce message.
-- [ ] Publier ensuite un paiement valide et obtenir son PASS request/reply.
-- [ ] Livrer le script de test, les changements applicatifs nécessaires et le guide d'exécution.
-- [ ] Enregistrer les résultats réels dans evidence/, avec identifiants et limites.
+Guide : [retry/backout](11-test-retry-backout.md). Preuve : [exécution CRC](../evidence/2026-09-11-crc-retry-backout.md).
 
-Ne pas purger les files pour faire réussir le test. Ne pas accorder des droits globaux à app. Le scénario DLQ est distinct du scénario backout.
+Prochain lot :
+- [ ] Concevoir un scénario DLQ isolé, avec une cause de non-livraison et un identifiant explicites.
+- [ ] Vérifier l'en-tête et le motif de rejet réellement observés, sans assimiler DLQ et backout.
+- [ ] Préserver les messages existants et documenter les droits nécessaires.
+- [ ] Confirmer ensuite qu'un paiement valide passe.
+- [ ] Enregistrer la preuve ; poursuivre par le rejeu contrôlé et l'idempotence durable.
 
 ## 5. Checklist restante pour terminer le périmètre
 
@@ -93,7 +95,7 @@ Ne pas purger les files pour faire réussir le test. Ne pas accorder des droits 
 
 ### B. Fiabilité métier
 
-- [ ] Terminer le lot backout décrit ci-dessus.
+- [x] Lot retry/backout terminé et testé sur CRC.
 - [ ] Ajouter un scénario DLQ contrôlé et expliquer la différence avec backout.
 - [ ] Implémenter le rejeu contrôlé avec traçabilité.
 - [ ] Ajouter une persistance métier dédiée et une idempotence durable.
@@ -161,4 +163,4 @@ Le CV devra distinguer « réalisé et testé », « documenté » et « prévu 
 
 ## 7. Message pour reprendre avec l'assistant
 
-> Reprends ce dépôt en lisant docs/10-reprise-et-reste-a-faire.md, le README et les preuves. Le paiement JMS authentifié et sa reprise après redémarrage sont validés sur CRC. Le contrôle HTP passe sans modification. Commence par le lot message invalide/retry/backout, puis un paiement valide. Préserve Wero, le PVC et les secrets. Publie une étape vérifiée dans le dépôt avec les commandes Git Bash à exécuter ; n'annonce pas de test CRC ou Native HA réussi sans sortie réelle.
+> Reprends ce dépôt en lisant docs/10-reprise-et-reste-a-faire.md, le README et les preuves. Le paiement JMS authentifié et sa reprise après redémarrage sont validés sur CRC. Le contrôle HTP passe sans modification. Le lot retry/backout est aussi validé (preuve du 11 septembre). Commence par le scénario DLQ contrôlé, puis le rejeu et l'idempotence durable. Préserve Wero, le PVC et les secrets. Publie une étape vérifiée dans le dépôt avec les commandes Git Bash à exécuter ; n'annonce pas de test CRC ou Native HA réussi sans sortie réelle.
