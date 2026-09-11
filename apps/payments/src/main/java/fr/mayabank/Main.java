@@ -7,6 +7,7 @@ public final class Main {
     public static void main(String[] args) throws Exception {
         String mode = args.length == 0 ? "process" : args[0];
         switch (mode) {
+            case "dlq-test" -> DlqTest.run();
             case "backout-test" -> BackoutTest.run();
             case "send" -> PaymentOrder.run();
             case "process" -> PaymentProcessing.run();
