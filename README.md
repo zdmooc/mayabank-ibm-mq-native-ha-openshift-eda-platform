@@ -2,9 +2,9 @@
 
 POC personnel de modernisation du messaging bancaire : partir des labs WAS/JMS/MDB existants, construire un parcours paiement reproductible sur OpenShift Local, puis valider IBM MQ Native HA sur un cluster OpenShift multi-nœuds GCP.
 
-**État au 10 septembre 2026 : MQ mono-instance, persistance, paiement JMS authentifié et reprise après redémarrage validés sur CRC par sorties utilisateur.** Contrôle automatisé HTP validé sur la configuration déjà corrigée. Installation sur volume neuf et Native HA non validées ; aucun module Terraform livré.
+**État au 11 septembre 2026 : MQ mono-instance, persistance, paiement JMS authentifié et reprise après redémarrage validés sur CRC par sorties utilisateur.** Contrôle automatisé HTP validé sur la configuration déjà corrigée. Installation sur volume neuf et Native HA non validées ; aucun module Terraform livré.
 
-**Reprendre ici : [point de pause et checklist complète](docs/10-reprise-et-reste-a-faire.md).** Prochain lot : message invalide, retry/backout, puis paiement valide.
+**Reprendre ici : [point de pause et checklist complète](docs/10-reprise-et-reste-a-faire.md).** Retry/backout et paiement valide après rejet : [test CRC réussi](evidence/2026-09-11-crc-retry-backout.md). Prochain lot : DLQ contrôlée.
 
 ## Deux profils
 
