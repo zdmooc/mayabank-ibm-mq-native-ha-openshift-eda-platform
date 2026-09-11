@@ -14,12 +14,12 @@ Point de pause demandé par Zidane. Reprendre ici à la prochaine séance. Aucun
 - [x] Reconnexion du processeur et nouveau paiement après redémarrage MQ, DEBUG retiré.
 - [x] Script ensure-htp-order.sh exécuté sur configuration déjà corrigée : aucune modification ni demande de redémarrage, puis nouveau PASS JMS.
 
-Dernier paiement validé : `0db22874-d82c-486c-8e70-c7a13f6e20ed`.
-Commit exécuté par l'utilisateur : `d05c1ad`. Les commits suivants ont enrichi la documentation.
+Dernier paiement validé : `b15afcbc-e510-4c58-8d24-60e940381355`.
+Dernière image publiée : `sha256:12031aebad96d73f79c90d7e0fe3da272ce0b5d8607e5790a92ba3bafc4f6b16`. Le dernier extrait ne donne pas le commit exact du clone.
 Preuves : [MQ local](../evidence/2026-09-09-crc-mq.md), [JMS et reprise](../evidence/2026-09-10-crc-jms-request-reply.md).
 
-**Non validés : installation complète sur volume neuf, Native HA, TLS/mTLS, idempotence durable, DLQ, charge et PRA.**
-Retry/backout validés : [preuve du 11 septembre](../evidence/2026-09-11-crc-retry-backout.md). La présence de la DLQ ne prouve pas son fonctionnement.
+**Non validés : installation complète sur volume neuf, Native HA, TLS/mTLS, idempotence durable, DLQ automatique par canal, charge et PRA.**
+Retry/backout validés : [preuve du 11 septembre](../evidence/2026-09-11-crc-retry-backout.md). DLQ applicative validée : [preuve](../evidence/2026-09-11-crc-dlq-applicative.md). Le placement automatique par un canal reste à tester.
 Le BuildConfig actuel n'est pas un pipeline Tekton. Le déploiement actuel utilise des scripts oc, pas Argo CD.
 
 ## 2. Environnement à conserver
@@ -64,7 +64,7 @@ bash scripts/payments/verify.sh
 Attendre le PASS du paiement avant de développer le lot suivant. Les options strictes restent dans les scripts ; ne pas coller `set -eu` dans le shell interactif.
 Ne pas relancer le build complet pour ce simple contrôle.
 
-## 4. Lot retry/backout terminé ; prochain lot DLQ
+## 4. Retry/backout et DLQ applicative terminés ; prochain lot rejeu
 
 - [x] Message invalide avec corrélation unique.
 - [x] Deux retries observés ; backout applicatif à la troisième livraison.
@@ -75,12 +75,21 @@ Ne pas relancer le build complet pour ce simple contrôle.
 
 Guide : [retry/backout](11-test-retry-backout.md). Preuve : [exécution CRC](../evidence/2026-09-11-crc-retry-backout.md).
 
-Prochain lot :
-- [ ] Concevoir un scénario DLQ isolé, avec une cause de non-livraison et un identifiant explicites.
-- [ ] Vérifier l'en-tête et le motif de rejet réellement observés, sans assimiler DLQ et backout.
-- [ ] Préserver les messages existants et documenter les droits nécessaires.
-- [ ] Confirmer ensuite qu'un paiement valide passe.
-- [ ] Enregistrer la preuve ; poursuivre par le rejeu contrôlé et l'idempotence durable.
+- [x] Erreur MQOPEN 2085 sur destination inexistante.
+- [x] Publication applicative en DLQ et contrôle MQDLH/contenu non destructif.
+- [x] Paiement valide après le scénario DLQ.
+- [x] Preuve DLQ enregistrée.
+
+Prochain lot : rejeu contrôlé.
+
+- [ ] Préparer un message et une destination de reprise dédiés au test.
+- [ ] Sélectionner précisément le message, vérifier son en-tête et sa destination autorisée.
+- [ ] Prévoir mode inspection, traçabilité et opérations transactionnelles.
+- [ ] Vérifier le contenu reçu après rejeu et l'état de la source.
+- [ ] Tester l'échec de destination sans perte du message source.
+- [ ] Poursuivre avec la persistance métier et l'idempotence durable.
+
+Le message DLQ existant contient une sonde DLQ-PROBE, pas un paiement : ne pas le réinjecter aveuglément dans PAYMENT.REQUEST.Q. Conserver les preuves existantes.
 
 ## 5. Checklist restante pour terminer le périmètre
 
@@ -96,7 +105,8 @@ Prochain lot :
 ### B. Fiabilité métier
 
 - [x] Lot retry/backout terminé et testé sur CRC.
-- [ ] Ajouter un scénario DLQ contrôlé et expliquer la différence avec backout.
+- [x] DLQ applicative testée ; différence avec backout documentée.
+- [ ] Tester séparément une DLQ automatique via canal MQ.
 - [ ] Implémenter le rejeu contrôlé avec traçabilité.
 - [ ] Ajouter une persistance métier dédiée et une idempotence durable.
 - [ ] Tester doublons, interruption entre traitement et acquittement, reprise et cohérence transactionnelle.
@@ -163,4 +173,4 @@ Le CV devra distinguer « réalisé et testé », « documenté » et « prévu 
 
 ## 7. Message pour reprendre avec l'assistant
 
-> Reprends ce dépôt en lisant docs/10-reprise-et-reste-a-faire.md, le README et les preuves. Le paiement JMS authentifié et sa reprise après redémarrage sont validés sur CRC. Le contrôle HTP passe sans modification. Le lot retry/backout est aussi validé (preuve du 11 septembre). Commence par le scénario DLQ contrôlé, puis le rejeu et l'idempotence durable. Préserve Wero, le PVC et les secrets. Publie une étape vérifiée dans le dépôt avec les commandes Git Bash à exécuter ; n'annonce pas de test CRC ou Native HA réussi sans sortie réelle.
+> Reprends ce dépôt en lisant docs/10-reprise-et-reste-a-faire.md, le README et les preuves. Le paiement JMS authentifié et sa reprise après redémarrage sont validés sur CRC. Le contrôle HTP passe sans modification. Le lot retry/backout est aussi validé (preuve du 11 septembre). La DLQ applicative avec MQDLH 2085 est validée aussi. Commence par le rejeu contrôlé sur un scénario dédié, puis l'idempotence durable. Ne rejoue pas la sonde DLQ-PROBE comme un paiement. Préserve Wero, le PVC et les secrets. Publie une étape vérifiée dans le dépôt avec les commandes Git Bash à exécuter ; n'annonce pas de test CRC ou Native HA réussi sans sortie réelle.
