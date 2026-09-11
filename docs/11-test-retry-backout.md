@@ -1,6 +1,6 @@
 # Test message invalide, retry et backout
 
-Statut : code livré, compilation Java 17 et syntaxe Bash contrôlées. Aucune exécution de ce nouveau lot sur CRC n'est encore attestée.
+Statut : exécuté avec succès sur CRC le 11 septembre 2026. Deux retries, backout à la troisième livraison et paiement valide après rejet : [preuve complète](../evidence/2026-09-11-crc-retry-backout.md).
 
 ## Exécution depuis Git Bash
 
