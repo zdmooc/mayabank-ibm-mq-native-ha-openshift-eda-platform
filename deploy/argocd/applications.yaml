@@ -1,0 +1,66 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: mayabank-mq
+  namespace: openshift-gitops
+spec:
+  description: MayaBank IBM MQ / EDA POC
+  sourceRepos:
+    - https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+  destinations:
+    - namespace: mayabank-mq-local
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mayabank-mq-local-core
+  namespace: openshift-gitops
+spec:
+  project: mayabank-mq
+  source:
+    repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+    targetRevision: main
+    path: deploy/payments
+    directory:
+      include: '{mq-connected.yaml,network.yaml,processor.yaml}'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mayabank-mq-local
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mayabank-mq-local-db
+  namespace: openshift-gitops
+spec:
+  project: mayabank-mq
+  source:
+    repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+    targetRevision: main
+    path: deploy/idempotency
+    directory:
+      include: '{database.yaml}'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mayabank-mq-local
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
