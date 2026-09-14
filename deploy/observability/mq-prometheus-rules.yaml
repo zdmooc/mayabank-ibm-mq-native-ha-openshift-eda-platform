@@ -1,0 +1,45 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: mayabank-mq-alerts
+  namespace: mayabank-mq-prod
+  labels:
+    app.kubernetes.io/part-of: mayabank-mq
+spec:
+  groups:
+    - name: mayabank-mq.queues
+      rules:
+        - alert: MQQueueDepthHigh
+          expr: ibmmq_queue_depth{qmgr="QM.PROD",queue=~"PAYMENT\\..*"} > 500
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "IBM MQ queue depth is high"
+            description: "{{ $labels.queue }} on {{ $labels.qmgr }} has depth {{ $value }} for more than 5 minutes."
+        - alert: MQOldestMessageTooOld
+          expr: ibmmq_queue_oldest_message_age{qmgr="QM.PROD",queue=~"PAYMENT\\.(REQUEST|RESPONSE)\\.Q"} > 120
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "IBM MQ business message is too old"
+            description: "{{ $labels.queue }} has an oldest message older than 120 seconds."
+        - alert: MQDeadLetterQueueNotEmpty
+          expr: ibmmq_queue_depth{qmgr="QM.PROD",queue="PAYMENT.DLQ"} > 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "IBM MQ DLQ is not empty"
+            description: "PAYMENT.DLQ contains {{ $value }} message(s); investigate before replay."
+    - name: mayabank-mq.health
+      rules:
+        - alert: MQMetricsMissing
+          expr: absent(ibmmq_qmgr_status{qmgr="QM.PROD"})
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "IBM MQ metrics are missing"
+            description: "No qmgr status metric has been scraped for QM.PROD for 5 minutes."
