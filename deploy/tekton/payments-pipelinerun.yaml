@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: payments-ci-
+  namespace: mayabank-mq-build
+spec:
+  pipelineRef:
+    name: payments-ci
+  taskRunTemplate:
+    serviceAccountName: tekton-payments
+  params:
+    - name: revision
+      value: feature/covea-eda-i1-i4
+  workspaces:
+    - name: source
+      volumeClaimTemplate:
+        spec:
+          accessModes: [ReadWriteOnce]
+          resources:
+            requests:
+              storage: 2Gi
