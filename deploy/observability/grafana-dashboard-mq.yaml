@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-mayabank-mq
+  namespace: mayabank-mq-prod
+  labels:
+    grafana_dashboard: "1"
+data:
+  mayabank-mq.json: |
+    {
+      "title": "MayaBank IBM MQ - Production",
+      "timezone": "browser",
+      "schemaVersion": 39,
+      "version": 1,
+      "refresh": "15s",
+      "panels": [
+        {
+          "type": "timeseries",
+          "title": "Payment queue depth",
+          "targets": [{"expr": "ibmmq_queue_depth{qmgr=\"QM.PROD\",queue=~\"PAYMENT\\\\..*\"}", "legendFormat": "{{queue}}"}],
+          "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+        },
+        {
+          "type": "timeseries",
+          "title": "Oldest message age",
+          "targets": [{"expr": "ibmmq_queue_oldest_message_age{qmgr=\"QM.PROD\",queue=~\"PAYMENT\\\\..*\"}", "legendFormat": "{{queue}}"}],
+          "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+        },
+        {
+          "type": "stat",
+          "title": "Queue manager status",
+          "targets": [{"expr": "ibmmq_qmgr_status{qmgr=\"QM.PROD\"}"}],
+          "gridPos": {"h": 6, "w": 8, "x": 0, "y": 8}
+        },
+        {
+          "type": "stat",
+          "title": "DLQ depth",
+          "targets": [{"expr": "ibmmq_queue_depth{qmgr=\"QM.PROD\",queue=\"PAYMENT.DLQ\"}"}],
+          "gridPos": {"h": 6, "w": 8, "x": 8, "y": 8}
+        },
+        {
+          "type": "stat",
+          "title": "Backout depth",
+          "targets": [{"expr": "ibmmq_queue_depth{qmgr=\"QM.PROD\",queue=\"PAYMENT.BACKOUT.Q\"}"}],
+          "gridPos": {"h": 6, "w": 8, "x": 16, "y": 8}
+        }
+      ]
+    }
