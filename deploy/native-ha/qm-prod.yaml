@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mayabank-mq-prod
+  labels:
+    app.kubernetes.io/part-of: mayabank-mq
+---
+apiVersion: mq.ibm.com/v1beta1
+kind: QueueManager
+metadata:
+  name: qm-prod
+  namespace: mayabank-mq-prod
+spec:
+  # Safety gate: keep false in Git. Change only after license/entitlement review.
+  license:
+    accept: false
+    license: L-NUUP-23NH8Y
+    use: Production
+  version: 9.4.5.1-r1
+  terminationGracePeriodSeconds: 120
+  queueManager:
+    name: QM.PROD
+    availability:
+      type: NativeHA
+      updateStrategy: RollingUpdate
+      tls:
+        secretName: qm-prod-replication-tls
+    storage:
+      allowVolumeExpansion: true
+      queueManager:
+        type: persistent-claim
+        size: 10Gi
+        deleteClaim: false
+    route:
+      enabled: false
+    metrics:
+      enabled: true
+      tls:
+        provider: openshift
+      serviceMonitor:
+        enabled: true
+    mqsc:
+      - configMap:
+          name: qm-prod-security
+          items:
+            - security.mqsc
+    ini:
+      - configMap:
+          name: qm-prod-security
+          items:
+            - security.ini
+  pki:
+    keys:
+      - name: default
+        secret:
+          secretName: qm-prod-server-tls
+          items:
+            - tls.key
+            - tls.crt
+            - ca.crt
+    trust:
+      - name: clientca
+        secret:
+          secretName: qm-prod-client-ca
+          items:
+            - ca.crt
+  web:
+    enabled: false
