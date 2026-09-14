@@ -11,7 +11,8 @@ Industrialiser le POC sans confondre CI et CD :
 
 ## Tekton
 
-Manifeste : `deploy/tekton/payments-pipeline.yaml`.
+Manifeste permanent : `deploy/tekton/payments-pipeline.yaml`.
+Run de lab : `deploy/tekton/payments-pipelinerun.yaml`.
 
 Le pipeline comporte un `Task` autonome :
 
@@ -20,7 +21,7 @@ Le pipeline comporte un `Task` autonome :
 3. scan Trivy HIGH/CRITICAL sur vulnérabilités, secrets et misconfigurations ;
 4. déclenchement du `BuildConfig/payments` existant avec `oc start-build --from-dir`.
 
-Le compte de service n'obtient que les droits de build et de lecture ImageStream nécessaires dans `mayabank-mq-build`.
+Le compte de service obtient uniquement les droits de lecture nécessaires et les sous-ressources OpenShift `buildconfigs/instantiate*` nécessaires au binary build.
 
 ### Exécution lab
 
@@ -29,12 +30,10 @@ Pré-requis : OpenShift Pipelines/Tekton installé.
 ```bash
 oc apply -f deploy/payments/build.yaml
 oc apply -f deploy/tekton/payments-pipeline.yaml
-
-# Le document contient un PipelineRun de démonstration. Pour une nouvelle exécution :
-oc create -f deploy/tekton/payments-pipeline.yaml
+oc create -f deploy/tekton/payments-pipelinerun.yaml
 ```
 
-En pratique, pour éviter de recréer les objets permanents à chaque run, appliquer une fois le SA/Role/Task/Pipeline puis créer uniquement un nouveau `PipelineRun` depuis la console ou un manifeste extrait.
+Pour une nouvelle exécution, recréer seulement un nouveau `PipelineRun` ; ne pas réappliquer les objets permanents sans raison.
 
 Vérifier :
 
@@ -57,7 +56,7 @@ Deux Applications séparent :
 
 Les Jobs de test ne sont pas gérés en continu par Argo CD. Ils restent des sondes déclenchées explicitement.
 
-Les secrets `mq-app-credentials` et `payments-db-credentials` ne sont pas dans Git. Ils doivent exister avant le premier sync. Une future cible Vault/External Secrets remplacera cette préparation manuelle.
+Les secrets `mq-app-credentials` et `payments-db-credentials` ne sont pas dans Git. Ils doivent exister avant le premier sync. Une cible Vault/External Secrets est fournie séparément comme modèle et ne doit être activée que si l'opérateur correspondant est installé.
 
 ### Exécution lab
 
