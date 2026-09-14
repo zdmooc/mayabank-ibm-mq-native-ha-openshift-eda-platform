@@ -33,6 +33,8 @@ spec:
               value: /etc/mayabank/mq/mqAppPassword
             - name: DB_PASSWORD_FILE
               value: /etc/mayabank/db/password
+            - name: READY_FILE
+              value: /tmp/mayabank-mq-ready
           resources:
             requests:
               cpu: 100m
@@ -40,6 +42,17 @@ spec:
             limits:
               cpu: 500m
               memory: 512Mi
+          startupProbe:
+            exec:
+              command: [sh, -c, 'test -f /tmp/mayabank-mq-ready']
+            periodSeconds: 5
+            failureThreshold: 36
+          readinessProbe:
+            exec:
+              command: [sh, -c, 'test -f /tmp/mayabank-mq-ready']
+            periodSeconds: 5
+            failureThreshold: 2
+            successThreshold: 1
           securityContext:
             runAsNonRoot: true
             allowPrivilegeEscalation: false
