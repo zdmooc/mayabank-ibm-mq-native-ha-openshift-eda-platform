@@ -1,12 +1,18 @@
 package fr.mayabank;
 
 import javax.jms.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 final class PaymentProcessing {
+    private static final Path READY_FILE = Path.of(Mq.env("READY_FILE", "/tmp/mayabank-mq-ready"));
+
     static void run() throws Exception {
+        setReady(false);
         while (!Thread.currentThread().isInterrupted()) {
             try (Connection connection = Mq.connect(false)) {
                 connection.start();
+                setReady(true);
                 try (Session session = connection.createSession(true, Session.SESSION_TRANSACTED);
                      MessageConsumer consumer = session.createConsumer(session.createQueue("queue:///PAYMENT.REQUEST.Q"));
                      MessageProducer reply = session.createProducer(session.createQueue("queue:///PAYMENT.RESPONSE.Q"));
@@ -72,7 +78,18 @@ final class PaymentProcessing {
             } catch (JMSException failure) {
                 System.err.println("MQ connection/session failure; retry in 5s; code=" + failure.getErrorCode());
                 Thread.sleep(5000);
+            } finally {
+                setReady(false);
             }
+        }
+    }
+
+    private static void setReady(boolean ready) {
+        try {
+            if (ready) Files.writeString(READY_FILE, "mq-connected\n");
+            else Files.deleteIfExists(READY_FILE);
+        } catch (Exception failure) {
+            System.err.println("Readiness marker update failed; ready=" + ready + "; type=" + failure.getClass().getSimpleName());
         }
     }
 }
