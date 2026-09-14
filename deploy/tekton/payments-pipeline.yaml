@@ -12,7 +12,10 @@ metadata:
 rules:
   - apiGroups: [build.openshift.io]
     resources: [buildconfigs, builds, builds/log]
-    verbs: [get, list, watch, create]
+    verbs: [get, list, watch]
+  - apiGroups: [build.openshift.io]
+    resources: [buildconfigs/instantiate, buildconfigs/instantiatebinary]
+    verbs: [create]
   - apiGroups: [image.openshift.io]
     resources: [imagestreams, imagestreamtags]
     verbs: [get, list, watch]
@@ -107,25 +110,3 @@ spec:
       workspaces:
         - name: source
           workspace: source
----
-apiVersion: tekton.dev/v1
-kind: PipelineRun
-metadata:
-  generateName: payments-ci-
-  namespace: mayabank-mq-build
-spec:
-  pipelineRef:
-    name: payments-ci
-  taskRunTemplate:
-    serviceAccountName: tekton-payments
-  params:
-    - name: revision
-      value: feature/covea-eda-i1-i4
-  workspaces:
-    - name: source
-      volumeClaimTemplate:
-        spec:
-          accessModes: [ReadWriteOnce]
-          resources:
-            requests:
-              storage: 2Gi
