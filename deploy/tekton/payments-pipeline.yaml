@@ -53,6 +53,9 @@ spec:
     - name: clone
       image: alpine/git:2.47.2
       workingDir: $(workspaces.source.path)
+      env:
+        - name: HOME
+          value: /tekton/home
       script: |
         #!/bin/sh
         set -eu
@@ -60,27 +63,38 @@ spec:
         git clone --depth=1 --branch "$(params.revision)" "$(params.git-url)" repo
     - name: unit-tests
       image: maven:3.9.9-eclipse-temurin-17
-      workingDir: $(workspaces.source.path)/repo/apps/payments
+      workingDir: $(workspaces.source.path)
+      env:
+        - name: HOME
+          value: /tekton/home
       script: |
         #!/bin/sh
         set -eu
+        cd repo/apps/payments
         mvn -B -ntp test
     - name: source-security-scan
       image: aquasec/trivy:0.58.1
-      workingDir: $(workspaces.source.path)/repo
+      workingDir: $(workspaces.source.path)
       env:
+        - name: HOME
+          value: /tekton/home
         - name: TRIVY_CACHE_DIR
           value: /tmp/trivy
       script: |
         #!/bin/sh
         set -eu
+        cd repo
         trivy fs --scanners vuln,secret,misconfig --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 .
     - name: openshift-build
       image: quay.io/openshift/origin-cli:4.22
-      workingDir: $(workspaces.source.path)/repo
+      workingDir: $(workspaces.source.path)
+      env:
+        - name: HOME
+          value: /tekton/home
       script: |
         #!/bin/sh
         set -eu
+        cd repo
         oc -n mayabank-mq-build start-build payments --from-dir=apps/payments --follow --wait
 ---
 apiVersion: tekton.dev/v1
