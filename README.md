@@ -12,8 +12,8 @@ La branche `feature/covea-eda-i1-i4` porte la préparation de la cible entretien
 |---|---|---|
 | I1 — fiabilité métier | idempotence PostgreSQL, crash DB/MQ, redelivery, readiness liée à la connexion MQ | **RUNTIME_VALIDATED sur CRC — 2026-09-15** |
 | I2 — industrialisation | Tekton build/test/Trivy/OpenShift Build + Argo CD GitOps/self-heal | **RUNTIME_VALIDATED sur CRC — 2026-09-15** |
-| I3 — sécurité/observabilité | client JMS mTLS/reconnect, CHLAUTH/OAM least privilege, PrometheusRule, dashboard Grafana, runbooks | DESIGNED + IMPLEMENTED / READY_TO_TEST |
-| I4 — Native HA | QueueManager Operator NativeHA 3 instances, TLS réplication, stockage persistant, métriques, sonde failover | DESIGNED + IMPLEMENTED / RUNTIME PENDING — multi-worker requis |
+| I3 — sécurité/observabilité | client JMS mTLS/reconnect, CHLAUTH/OAM least privilege, PrometheusRule, dashboard Grafana, runbooks | DESIGNED + IMPLEMENTED / validation runtime partielle sur CRC |
+| I4 — Native HA | QueueManager Operator NativeHA 3 instances, TLS réplication, stockage persistant, sécurité, observabilité, runbooks, design Azure ARO multi-AZ | **DESIGN_COMPLETE / AZURE IMPLEMENTATION PENDING / RUNTIME PENDING** |
 
 Guides :
 
@@ -21,6 +21,8 @@ Guides :
 - [I2 — Tekton et Argo CD](docs/16-i2-tekton-argocd-gitops.md)
 - [I3 — sécurité, observabilité et exploitation](docs/17-i3-securite-observabilite.md)
 - [I4 — IBM MQ Native HA multi-worker](docs/18-i4-native-ha.md)
+- [I4 — design cible Azure Red Hat OpenShift](docs/19-i4-azure-aro-target-design.md)
+- [I4 — plan d'implémentation Azure](docs/20-i4-azure-implementation-plan.md)
 
 **Règle de vérité :** un manifeste, un script ou un pipeline livré n'est pas une preuve d'exécution. Le CV doit continuer à distinguer `DESIGNED / IMPLEMENTED / READY_TO_RUN / RUNTIME_VALIDATED`.
 
@@ -29,7 +31,7 @@ Guides :
 | Profil | But | Limite |
 |---|---|---|
 | local-crc | MQ mono-instance, paiement, erreurs, sécurité, CI/CD et supervision | CRC mono-nœud ne démontre pas la survie à une panne de nœud |
-| multiworker-native-ha | Trois instances MQ sur trois workers distincts ; tests de panne et reconnexion | cluster, licences, stockage et coût à valider avant déploiement |
+| azure-aro-native-ha | Trois instances MQ sur trois workers, cible trois Availability Zones, Azure Disk RWO, Key Vault, GitOps et tests de failover | implémentation Azure, licences, quotas et coût à valider avant déploiement |
 
 ## Parcours paiement Java/JMS
 
@@ -49,13 +51,15 @@ Installation du lot : `bash scripts/payments/deploy.sh`. Pour reprendre une inst
 
 `deploy/native-ha/qm-prod.yaml` prépare un `QueueManager` `mq.ibm.com/v1beta1` en Native HA avec :
 
-- IBM MQ 9.4.5.1-r1 ;
-- trois instances gérées par l'IBM MQ Operator ;
+- IBM MQ 9.4.5.1-r1 comme version candidate à revalider avant Azure ;
+- trois instances gérées par IBM MQ Operator ;
 - chiffrement du trafic de réplication ;
 - stockage persistant RWO ;
 - configuration mTLS/CHLAUTH/OAM ;
 - métriques Prometheus et ServiceMonitor ;
 - console web désactivée.
+
+Le design Azure ARO est désormais complet : cluster privé multi-worker, cible trois zones, Azure Disk RWO indépendant par instance, Key Vault pour les secrets, réseau hub/spoke, GitOps, observabilité et matrice de tests pod/worker/zone. Aucun de ces éléments Azure n'est présenté comme exécuté tant que le lab n'existe pas.
 
 La licence reste volontairement `accept: false` dans Git. Aucun déploiement Native HA ne doit être lancé sans validation explicite de l'entitlement, du coût et du cluster.
 
@@ -63,26 +67,26 @@ La licence reste volontairement `accept: false` dans Git. Aucun déploiement Nat
 
 1. Lire le [cadrage et l'architecture](docs/01-architecture.md).
 2. Collecter les [prérequis CRC](docs/02-prerequis-crc.md), sans modifier le cluster.
-3. I1 et I2 sont validés sur CRC ; poursuivre I3 avec les tests sécurité/observabilité réellement exécutables localement.
-4. Préparer un vrai cluster trois workers pour I4 ; CRC ne peut pas fournir cette preuve.
-5. Enregistrer chaque résultat dans `evidence/` avec date, commit et sorties.
+3. Finaliser les derniers points d'observabilité I3 sur CRC avec preuves.
+4. Pour I4, utiliser le [design ARO](docs/19-i4-azure-aro-target-design.md), puis le [plan Azure](docs/20-i4-azure-implementation-plan.md).
+5. Enregistrer chaque résultat Azure dans `evidence/i4-azure-YYYYMMDD/` avec date, commit et sorties.
 
 ## Périmètre cible
 
 - Applications Java payment-order et payment-processing ; PostgreSQL pour la persistance métier.
 - IBM MQ : messages persistants, transactions, DLQ, backout, retry borné, rejeu contrôlé et idempotence.
-- OpenShift : stockage, RBAC, quotas, NetworkPolicies, exposition adaptée aux protocoles.
-- Argo CD, IBM MQ Operator, Tekton, Terraform/Ansible selon plateforme, gestion externalisée des secrets.
+- OpenShift/ARO : stockage, RBAC, quotas, NetworkPolicies, multi-AZ, exposition adaptée aux protocoles.
+- Argo CD, IBM MQ Operator, Tekton, IaC Azure, gestion externalisée des secrets.
 - Prometheus/Grafana : métriques MQ, alertes, dashboards ; corrélation applicative.
 - Tests de résilience, capacité, documentation HLD/LLD, ADR et runbooks.
-- Extensions après validation du socle : pont MQ vers Kafka, comparaison AMQ Broker, couche API sécurisée.
+- Extensions après validation du socle : PRA/CRR, pont MQ vers Kafka, comparaison AMQ Broker, couche API sécurisée.
 
 ## Règles
 
 Pas de mot de passe, clé privée, kubeconfig, pull secret ou état Terraform dans Git.
 Pas de création cloud sans validation du coût et autorisation explicite.
 Pas de mention « testé » sans résultat enregistré. Un script écrit n'est pas une preuve d'exécution.
-Le profil Native HA reste `runtime pending` tant que ses essais multi-worker ne sont pas exécutés.
+Le profil Native HA reste `runtime pending` tant que ses essais multi-worker Azure ne sont pas exécutés.
 Les versions doivent être épinglées après vérification de compatibilité ; aucune dépendance `latest` pour une preuve finale.
 
 ## Sources de départ
@@ -90,8 +94,9 @@ Les versions doivent être épinglées après vérification de compatibilité ; 
 - [formation-was](https://github.com/zdmooc/formation-was)
 - [assessment-was-openshift](https://github.com/zdmooc/assessment-was-openshift)
 - [CRC](https://crc.dev/docs/getting-started/)
+- [Azure Red Hat OpenShift — service definition](https://learn.microsoft.com/azure/openshift/openshift-service-definitions)
 - [IBM MQ : licences](https://www.ibm.com/docs/en/ibm-mq/9.4.x?topic=mq-license-information)
 - [IBM MQ Native HA](https://www.ibm.com/docs/en/ibm-mq/9.4.x?topic=availability-native-ha)
 - [IBM MQ Operator — QueueManager API](https://www.ibm.com/docs/en/ibm-mq/9.4.x?topic=operator-api-reference-queuemanager-mqibmcomv1beta1)
 
-Les liens versionnés sont des références de départ, pas une preuve de compatibilité de l'environnement local.
+Les liens versionnés sont des références de départ, pas une preuve de compatibilité de l'environnement local ou Azure.
