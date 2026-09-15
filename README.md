@@ -2,18 +2,18 @@
 
 POC personnel de modernisation du messaging bancaire : partir des labs WAS/JMS/MDB existants, construire un parcours paiement reproductible sur OpenShift Local, puis valider IBM MQ Native HA sur un cluster OpenShift multi-nœuds.
 
-**État runtime prouvé : MQ mono-instance, persistance, paiement JMS authentifié et reprise après redémarrage validés sur CRC par sorties utilisateur.** Retry/backout, DLQ applicative et rejeu contrôlé ont également leurs preuves CRC. Native HA multi-worker n'est toujours pas revendiqué comme exécuté.
+**État runtime prouvé sur CRC : I1 fiabilité métier et I2 CI/CD GitOps sont `RUNTIME_VALIDATED`.** MQ mono-instance, persistance, paiement JMS authentifié, reprise après redémarrage, retry/backout, DLQ applicative, rejeu contrôlé, idempotence PostgreSQL avec crash après commit DB/avant commit transaction JMS-MQ, pipeline Tekton et self-heal Argo CD disposent de preuves runtime. Native HA multi-worker n'est toujours pas revendiqué comme exécuté.
 
 ## Parcours de finalisation I1 -> I4
 
 La branche `feature/covea-eda-i1-i4` porte la préparation de la cible entretien/production. Elle distingue strictement **IMPLEMENTED** de **RUNTIME_VALIDATED**.
 
-| Itération | Livré dans le dépôt | Statut avant exécution |
+| Itération | Livré dans le dépôt | Statut |
 |---|---|---|
-| I1 — fiabilité métier | idempotence PostgreSQL, crash DB/MQ, redelivery, readiness liée à la connexion MQ | IMPLEMENTED / READY_TO_RUN |
-| I2 — industrialisation | Tekton build/test/Trivy/OpenShift Build + Argo CD GitOps/self-heal | IMPLEMENTED / READY_TO_RUN |
-| I3 — sécurité/observabilité | client JMS mTLS/reconnect, CHLAUTH/OAM least privilege, PrometheusRule, dashboard Grafana, runbooks | DESIGNED + IMPLEMENTED / READY_TO_RUN |
-| I4 — Native HA | QueueManager Operator NativeHA 3 instances, TLS réplication, stockage persistant, métriques, sonde failover | DESIGNED + IMPLEMENTED / RUNTIME PENDING |
+| I1 — fiabilité métier | idempotence PostgreSQL, crash DB/MQ, redelivery, readiness liée à la connexion MQ | **RUNTIME_VALIDATED sur CRC — 2026-09-15** |
+| I2 — industrialisation | Tekton build/test/Trivy/OpenShift Build + Argo CD GitOps/self-heal | **RUNTIME_VALIDATED sur CRC — 2026-09-15** |
+| I3 — sécurité/observabilité | client JMS mTLS/reconnect, CHLAUTH/OAM least privilege, PrometheusRule, dashboard Grafana, runbooks | DESIGNED + IMPLEMENTED / READY_TO_TEST |
+| I4 — Native HA | QueueManager Operator NativeHA 3 instances, TLS réplication, stockage persistant, métriques, sonde failover | DESIGNED + IMPLEMENTED / RUNTIME PENDING — multi-worker requis |
 
 Guides :
 
@@ -42,7 +42,8 @@ Installation du lot : `bash scripts/payments/deploy.sh`. Pour reprendre une inst
 - Retry/backout : [preuve CRC](evidence/2026-09-11-crc-retry-backout.md).
 - DLQ applicative : [preuve CRC](evidence/2026-09-11-crc-dlq-applicative.md).
 - Rejeu contrôlé : [preuve CRC](evidence/2026-09-11-crc-rejeu-controle.md).
-- Idempotence durable PostgreSQL : code et sonde livrés ; exécution CRC à réaliser avec [I1](docs/15-i1-fiabilite-metier.md).
+- Idempotence durable PostgreSQL : `RUNTIME_VALIDATED` sur CRC avec scénarios NEW, DUPLICATE, CONFLICT et crash contrôlé après commit PostgreSQL / avant commit transaction JMS-MQ ; preuves sous `evidence/i1-20260915/`.
+- CI/CD GitOps : `RUNTIME_VALIDATED` avec `PipelineRun payments-ci-7xxc2`, 12 tests Maven, gate Trivy, `Build payments-12`, digest d'image et self-heal Argo CD ; preuves sous `evidence/i2-20260915/`.
 
 ## Cible IBM MQ Native HA
 
@@ -62,7 +63,7 @@ La licence reste volontairement `accept: false` dans Git. Aucun déploiement Nat
 
 1. Lire le [cadrage et l'architecture](docs/01-architecture.md).
 2. Collecter les [prérequis CRC](docs/02-prerequis-crc.md), sans modifier le cluster.
-3. Exécuter I1, puis I2 et I3 sur CRC lorsque les opérateurs requis sont disponibles.
+3. I1 et I2 sont validés sur CRC ; poursuivre I3 avec les tests sécurité/observabilité réellement exécutables localement.
 4. Préparer un vrai cluster trois workers pour I4 ; CRC ne peut pas fournir cette preuve.
 5. Enregistrer chaque résultat dans `evidence/` avec date, commit et sorties.
 
