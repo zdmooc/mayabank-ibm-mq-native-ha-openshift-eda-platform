@@ -1,0 +1,2 @@
+NAME                                  READY   STATUS    RESTARTS   AGE    IP             NODE   NOMINATED NODE   READINESS GATES
+payment-processing-6bdb8f5569-lctz6   1/1     Running   0          169m   10.217.0.167   crc    <none>           <none>

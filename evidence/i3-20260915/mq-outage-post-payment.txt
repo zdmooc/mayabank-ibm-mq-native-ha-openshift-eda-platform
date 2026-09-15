@@ -1,0 +1,2 @@
+ACCEPTED paymentId=7ab386fa-8a83-46f2-b81e-ed0145f6ec04
+PASS: authenticated JMS request/reply paymentId=7ab386fa-8a83-46f2-b81e-ed0145f6ec04

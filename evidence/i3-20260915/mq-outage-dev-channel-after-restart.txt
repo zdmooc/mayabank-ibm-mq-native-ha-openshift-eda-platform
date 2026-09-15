@@ -1,0 +1,11 @@
+5724-H72 (C) Copyright IBM Corp. 1994, 2026.
+Starting MQSC for queue manager QM.MAYABANK.
+
+
+     1 : DISPLAY CHANNEL('DEV.APP.SVRCONN') SSLCIPH SSLCAUTH
+AMQ8414I: Display Channel details.
+   CHANNEL(DEV.APP.SVRCONN)                CHLTYPE(SVRCONN)
+   SSLCAUTH(OPTIONAL)                      SSLCIPH( )
+One MQSC command read.
+No commands have a syntax error.
+All valid MQSC commands were processed.

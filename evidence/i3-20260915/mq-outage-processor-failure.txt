@@ -1,0 +1,171 @@
+September 15, 2026 at 4:37:35 PM UTC[RcvThread: com.ibm.mq.jmqi.remote.impl.RemoteTCPConnection@1017554884[qmid=QM.MAYABANK_2026-09-09_09.17.44,fap=17,channel=DEV.APP.SVRCONN,ccsid=819,sharecnv=10,hbint=300,peer=mq/10.217.5.205(1414),localport=33035,ssl=no], [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Queueing reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]' to queue manager 'null'
+
+EXPLANATION:
+null
+
+ACTION:
+null
+--------------------------------------------------------------------
+September 15, 2026 at 4:37:35 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Starting reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]' to queue manager 'null'
+
+EXPLANATION:
+A reconnection was started, either due to a request from a uniform cluster (non-null queue manager name) or as a result of a connection failure.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:37:35 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Rescheduling reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]'
+
+EXPLANATION:
+A reconnection failed and will be retried later.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:37:36 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Starting reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]' to queue manager 'null'
+
+EXPLANATION:
+A reconnection was started, either due to a request from a uniform cluster (non-null queue manager name) or as a result of a connection failure.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:37:36 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Rescheduling reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]'
+
+EXPLANATION:
+A reconnection failed and will be retried later.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:37:38 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Starting reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]' to queue manager 'null'
+
+EXPLANATION:
+A reconnection was started, either due to a request from a uniform cluster (non-null queue manager name) or as a result of a connection failure.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:37:38 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Rescheduling reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]'
+
+EXPLANATION:
+A reconnection failed and will be retried later.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:37:43 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Starting reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]' to queue manager 'null'
+
+EXPLANATION:
+A reconnection was started, either due to a request from a uniform cluster (non-null queue manager name) or as a result of a connection failure.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:37:43 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Rescheduling reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]'
+
+EXPLANATION:
+A reconnection failed and will be retried later.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:37:52 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Starting reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]' to queue manager 'null'
+
+EXPLANATION:
+A reconnection was started, either due to a request from a uniform cluster (non-null queue manager name) or as a result of a connection failure.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:37:52 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Rescheduling reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]'
+
+EXPLANATION:
+A reconnection failed and will be retried later.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:38:08 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Starting reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]' to queue manager 'null'
+
+EXPLANATION:
+A reconnection was started, either due to a request from a uniform cluster (non-null queue manager name) or as a result of a connection failure.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:38:08 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Rescheduling reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]'
+
+EXPLANATION:
+A reconnection failed and will be retried later.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:38:34 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Starting reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]' to queue manager 'null'
+
+EXPLANATION:
+A reconnection was started, either due to a request from a uniform cluster (non-null queue manager name) or as a result of a connection failure.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:38:34 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Rescheduling reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]'
+
+EXPLANATION:
+A reconnection failed and will be retried later.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:39:00 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Starting reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]' to queue manager 'null'
+
+EXPLANATION:
+A reconnection was started, either due to a request from a uniform cluster (non-null queue manager name) or as a result of a connection failure.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:39:00 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Rescheduling reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]'
+
+EXPLANATION:
+A reconnection failed and will be retried later.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:39:27 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Starting reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]' to queue manager 'null'
+
+EXPLANATION:
+A reconnection was started, either due to a request from a uniform cluster (non-null queue manager name) or as a result of a connection failure.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
+September 15, 2026 at 4:39:27 PM UTC[ReconnectThread [MQ Build Level=9.4.5.1(p945-001-260423.1)]] com.ibm.mq.jmqi.remote.impl.RemoteReconnectThread
+Rescheduling reconnection of parent hconn 'com.ibm.mq.jmqi.remote.impl.RemoteSession[:/365eccb4][connectionId=414D5143514D2E4D41594142414E4B20FD68A96A493A0040,traceIdentifier=411,remoteTraceIdentifier=-1]'
+
+EXPLANATION:
+A reconnection failed and will be retried later.
+
+ACTION:
+None required.
+--------------------------------------------------------------------
