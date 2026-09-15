@@ -1,0 +1,223 @@
+# CRC/local-only queue-level exporter for I3 runtime validation.
+# Source: IBM mq-metric-samples v5.7.1 (release aligned with MQ 9.4.5).
+# This is deliberately separate from the IBM MQ container built-in /metrics endpoint,
+# which exposed qmgr-level metrics only in this lab.
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: mq-prometheus-exporter
+  namespace: mayabank-mq-build
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: mq-prometheus-exporter
+  namespace: mayabank-mq-build
+spec:
+  runPolicy: SerialLatestOnly
+  source:
+    type: Git
+    git:
+      uri: https://github.com/ibm-messaging/mq-metric-samples.git
+      ref: v5.7.1
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: mq-prometheus-exporter:5.7.1
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: "2"
+      memory: 3Gi
+  triggers: []
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mq-prometheus-exporter-config
+  namespace: mayabank-mq-local
+data:
+  mq_prometheus.yaml: |
+    global:
+      useObjectStatus: true
+      useResetQStats: false
+      usePublications: true
+      useStatistics: false
+      logLevel: INFO
+      metaprefix: ""
+      pollInterval: 30s
+      rediscoverInterval: 5m
+      tzOffset: 0h
+
+    connection:
+      queueManager: QM.MAYABANK
+      connName: "mq(1414)"
+      channel: DEV.APP.SVRCONN
+      clientConnection: true
+      user: app
+      passwordFile: /run/secrets/mqAppPassword
+      replyQueue: SYSTEM.DEFAULT.MODEL.QUEUE
+      waitInterval: 3
+
+    objects:
+      queues:
+        - PAYMENT.REQUEST.Q
+        - PAYMENT.RESPONSE.Q
+        - PAYMENT.BACKOUT.Q
+        - PAYMENT.DLQ
+      channels: []
+      topics: []
+      subscriptions: []
+
+    filters:
+      hideSvrConnJobname: true
+      showInactiveChannels: false
+      showCustomAttribute: false
+      queueSubscriptionSelector:
+        - PUT
+        - GET
+        - GENERAL
+      metricInclude:
+        qmgr:
+        queues:
+        channels:
+        topics:
+        subscriptions:
+      metricExclude:
+        qmgr:
+        queues:
+        channels:
+        topics:
+        subscriptions:
+
+    prometheus:
+      port: 9157
+      metricsPath: /metrics
+      namespace: ibmmq
+      keepRunning: true
+      reconnectInterval: 5s
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mq-prometheus-exporter
+  namespace: mayabank-mq-local
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: mayabank-mq-exporter
+  template:
+    metadata:
+      labels:
+        app: mayabank-mq-exporter
+        mayabank-role: mq-client
+    spec:
+      serviceAccountName: payments
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: exporter
+          image: image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/mq-prometheus-exporter:5.7.1
+          imagePullPolicy: Always
+          ports:
+            - name: metrics
+              containerPort: 9157
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: metrics
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: config
+              mountPath: /opt/config/mq_prometheus.yaml
+              subPath: mq_prometheus.yaml
+              readOnly: true
+            - name: credentials
+              mountPath: /run/secrets/mqAppPassword
+              subPath: mqAppPassword
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: mq-prometheus-exporter-config
+        - name: credentials
+          secret:
+            secretName: mq-app-credentials
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mq-prometheus-exporter
+  namespace: mayabank-mq-local
+  labels:
+    app: mayabank-mq-exporter
+spec:
+  selector:
+    app: mayabank-mq-exporter
+  ports:
+    - name: metrics
+      port: 9157
+      targetPort: metrics
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-prometheus-to-mq-exporter
+  namespace: mayabank-mq-local
+spec:
+  podSelector:
+    matchLabels:
+      app: mayabank-mq-exporter
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: openshift-user-workload-monitoring
+      ports:
+        - protocol: TCP
+          port: 9157
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mayabank-mq-queue-metrics
+  namespace: mayabank-mq-local
+spec:
+  selector:
+    matchLabels:
+      app: mayabank-mq-exporter
+  endpoints:
+    - port: metrics
+      path: /metrics
+      scheme: http
+      interval: 30s
+      scrapeTimeout: 15s
