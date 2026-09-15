@@ -109,7 +109,7 @@ spec:
             - name: MQ_ENABLE_EMBEDDED_WEB_SERVER
               value: "false"
             - name: MQ_ENABLE_METRICS
-              value: "false"
+              value: "true"
             - name: MQ_LOGGING_CONSOLE_FORMAT
               value: json
           resources:
