@@ -1,0 +1,5 @@
+NAME          TYPE     FROM             STATUS                       STARTED         DURATION
+payments-9    Docker   Binary@552f962   Cancelled (CancelledBuild)   17 hours ago    
+payments-10   Docker   Binary@552f962   Cancelled (CancelledBuild)   4 hours ago     
+payments-11   Docker   Binary@552f962   Complete                     3 hours ago     2m43s
+payments-12   Docker   Binary           Complete                     4 minutes ago   2m45s

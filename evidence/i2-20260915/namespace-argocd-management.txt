@@ -1,0 +1,2 @@
+NAME                STATUS   AGE    LABELS
+mayabank-mq-local   Active   6d4h   app.kubernetes.io/part-of=mayabank-mq,argocd.argoproj.io/managed-by=openshift-gitops,kubernetes.io/metadata.name=mayabank-mq-local,openshift-pipelines.tekton.dev/namespace-reconcile-version=1.23.2,openshift-pipelines.tekton.dev/namespace-trusted-configmaps-version=1.23.2,pod-security.kubernetes.io/audit-version=latest,pod-security.kubernetes.io/audit=baseline,pod-security.kubernetes.io/warn-version=latest,pod-security.kubernetes.io/warn=baseline

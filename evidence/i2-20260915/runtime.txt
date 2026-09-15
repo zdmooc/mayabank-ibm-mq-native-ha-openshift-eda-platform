@@ -1,0 +1,19 @@
+NAME                                       SUCCEEDED   REASON      STARTTIME   COMPLETIONTIME
+pipelinerun.tekton.dev/payments-ci-42gwr   False       Failed      94m         81m
+pipelinerun.tekton.dev/payments-ci-7xxc2   True        Succeeded   6m8s        83s
+pipelinerun.tekton.dev/payments-ci-hmwdh   False       Failed      55m         52m
+pipelinerun.tekton.dev/payments-ci-rfsqx   False       Failed      66m         66m
+
+NAME                                                   SUCCEEDED   REASON       STARTTIME   COMPLETIONTIME
+taskrun.tekton.dev/payments-ci-42gwr-build-test-scan   False       StepFailed   94m         81m
+taskrun.tekton.dev/payments-ci-7xxc2-build-test-scan   True        Succeeded    6m8s        83s
+taskrun.tekton.dev/payments-ci-hmwdh-build-test-scan   False       StepFailed   55m         52m
+taskrun.tekton.dev/payments-ci-rfsqx-build-test-scan   False       StepFailed   66m         66m
+
+NAME                                        READY   STATUS      RESTARTS   AGE
+pod/payments-11-build                       0/1     Completed   0          3h14m
+pod/payments-12-build                       0/1     Completed   0          4m9s
+pod/payments-ci-42gwr-build-test-scan-pod   0/4     Error       0          94m
+pod/payments-ci-7xxc2-build-test-scan-pod   0/4     Completed   0          6m8s
+pod/payments-ci-hmwdh-build-test-scan-pod   0/4     Error       0          55m
+pod/payments-ci-rfsqx-build-test-scan-pod   0/4     Error       0          66m

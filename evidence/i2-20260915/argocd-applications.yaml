@@ -1,0 +1,367 @@
+apiVersion: v1
+items:
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"argoproj.io/v1alpha1","kind":"Application","metadata":{"annotations":{},"name":"mayabank-mq-local-core","namespace":"openshift-gitops"},"spec":{"destination":{"namespace":"mayabank-mq-local","server":"https://kubernetes.default.svc"},"project":"mayabank-mq","source":{"directory":{"include":"{mq-connected.yaml,network.yaml,processor.yaml}"},"path":"deploy/payments","repoURL":"https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git","targetRevision":"feature/covea-eda-i1-i4"},"syncPolicy":{"automated":{"prune":true,"selfHeal":true},"syncOptions":["CreateNamespace=true","ApplyOutOfSyncOnly=true"]}}}
+    creationTimestamp: "2026-09-15T13:03:59Z"
+    generation: 57
+    name: mayabank-mq-local-core
+    namespace: openshift-gitops
+    resourceVersion: "1226135"
+    uid: a44211dd-bc03-44a8-ab84-12bd5f4e59f8
+  spec:
+    destination:
+      namespace: mayabank-mq-local
+      server: https://kubernetes.default.svc
+    project: mayabank-mq
+    source:
+      directory:
+        include: '{mq-connected.yaml,network.yaml,processor.yaml}'
+      path: deploy/payments
+      repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+      targetRevision: feature/covea-eda-i1-i4
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+      syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+  status:
+    controllerNamespace: openshift-gitops
+    health:
+      lastTransitionTime: "2026-09-15T13:49:53Z"
+      status: Healthy
+    history:
+    - deployStartedAt: "2026-09-15T13:47:32Z"
+      deployedAt: "2026-09-15T13:47:38Z"
+      id: 0
+      initiatedBy: {}
+      revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+      source:
+        directory:
+          include: '{mq-connected.yaml,network.yaml,processor.yaml}'
+        path: deploy/payments
+        repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+        targetRevision: feature/covea-eda-i1-i4
+    operationState:
+      finishedAt: "2026-09-15T13:49:47Z"
+      message: successfully synced (all tasks run)
+      operation:
+        initiatedBy:
+          automated: true
+        retry:
+          limit: 5
+        sync:
+          autoHealAttemptsCount: 1
+          prune: true
+          resources:
+          - group: apps
+            kind: Deployment
+            name: payment-processing
+          revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+          source:
+            directory:
+              include: '{mq-connected.yaml,network.yaml,processor.yaml}'
+            path: deploy/payments
+            repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+            targetRevision: feature/covea-eda-i1-i4
+          syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+      phase: Succeeded
+      startedAt: "2026-09-15T13:49:45Z"
+      syncResult:
+        resources:
+        - group: apps
+          hookPhase: Running
+          images:
+          - image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0
+          kind: Deployment
+          message: deployment.apps/payment-processing configured
+          name: payment-processing
+          namespace: mayabank-mq-local
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+        source:
+          directory:
+            include: '{mq-connected.yaml,network.yaml,processor.yaml}'
+          path: deploy/payments
+          repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+          targetRevision: feature/covea-eda-i1-i4
+    reconciledAt: "2026-09-15T13:49:52Z"
+    resources:
+    - kind: ConfigMap
+      name: mq-config
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - kind: Namespace
+      name: mayabank-mq-local
+      status: Synced
+      version: v1
+    - health:
+        status: Healthy
+      kind: PersistentVolumeClaim
+      name: mq-data
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - health:
+        status: Healthy
+      kind: Service
+      name: mq
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - kind: ServiceAccount
+      name: mq
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - kind: ServiceAccount
+      name: payments
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - group: apps
+      health:
+        status: Healthy
+      kind: Deployment
+      name: mq
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - group: apps
+      health:
+        status: Healthy
+      kind: Deployment
+      name: payment-processing
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+      name: allow-payment-clients-to-mq
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+      name: allow-payments-mq-and-dns
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+      name: mq-deny-network
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    sourceHydrator: {}
+    sourceType: Directory
+    summary:
+      images:
+      - icr.io/ibm-messaging/mq@sha256:28cd7e9dc413eced83b21e02cd3683966f19ef22867bbc7ca8c1ed19d062f986
+      - image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0
+    sync:
+      comparedTo:
+        destination:
+          namespace: mayabank-mq-local
+          server: https://kubernetes.default.svc
+        source:
+          directory:
+            include: '{mq-connected.yaml,network.yaml,processor.yaml}'
+          path: deploy/payments
+          repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+          targetRevision: feature/covea-eda-i1-i4
+      revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+      status: Synced
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"argoproj.io/v1alpha1","kind":"Application","metadata":{"annotations":{},"name":"mayabank-mq-local-db","namespace":"openshift-gitops"},"spec":{"destination":{"namespace":"mayabank-mq-local","server":"https://kubernetes.default.svc"},"project":"mayabank-mq","source":{"directory":{"include":"{database.yaml}"},"path":"deploy/idempotency","repoURL":"https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git","targetRevision":"feature/covea-eda-i1-i4"},"syncPolicy":{"automated":{"prune":true,"selfHeal":true},"syncOptions":["CreateNamespace=true","ApplyOutOfSyncOnly=true"]}}}
+    creationTimestamp: "2026-09-15T13:03:59Z"
+    generation: 47
+    name: mayabank-mq-local-db
+    namespace: openshift-gitops
+    resourceVersion: "1225095"
+    uid: 5a9c81e1-8266-431f-b133-73c3565add5e
+  spec:
+    destination:
+      namespace: mayabank-mq-local
+      server: https://kubernetes.default.svc
+    project: mayabank-mq
+    source:
+      directory:
+        include: '{database.yaml}'
+      path: deploy/idempotency
+      repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+      targetRevision: feature/covea-eda-i1-i4
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+      syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+  status:
+    controllerNamespace: openshift-gitops
+    health:
+      lastTransitionTime: "2026-09-15T13:47:43Z"
+      status: Healthy
+    history:
+    - deployStartedAt: "2026-09-15T13:47:33Z"
+      deployedAt: "2026-09-15T13:47:36Z"
+      id: 0
+      initiatedBy: {}
+      revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+      source:
+        directory:
+          include: '{database.yaml}'
+        path: deploy/idempotency
+        repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+        targetRevision: feature/covea-eda-i1-i4
+    operationState:
+      finishedAt: "2026-09-15T13:47:36Z"
+      message: successfully synced (all tasks run)
+      operation:
+        initiatedBy:
+          automated: true
+        retry:
+          limit: 5
+        sync:
+          prune: true
+          revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+          source:
+            directory:
+              include: '{database.yaml}'
+            path: deploy/idempotency
+            repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+            targetRevision: feature/covea-eda-i1-i4
+          syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+      phase: Succeeded
+      retryCount: 5
+      startedAt: "2026-09-15T13:47:33Z"
+      syncResult:
+        resources:
+        - group: networking.k8s.io
+          hookPhase: Running
+          kind: NetworkPolicy
+          message: networkpolicy.networking.k8s.io/allow-payment-db-egress configured
+          name: allow-payment-db-egress
+          namespace: mayabank-mq-local
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: networking.k8s.io
+          hookPhase: Running
+          kind: NetworkPolicy
+          message: networkpolicy.networking.k8s.io/allow-payments-to-db configured
+          name: allow-payments-to-db
+          namespace: mayabank-mq-local
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: ""
+          hookPhase: Running
+          kind: PersistentVolumeClaim
+          message: persistentvolumeclaim/payments-db-data unchanged
+          name: payments-db-data
+          namespace: mayabank-mq-local
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: ""
+          hookPhase: Running
+          kind: Service
+          message: service/payments-db configured
+          name: payments-db
+          namespace: mayabank-mq-local
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        - group: apps
+          hookPhase: Running
+          images:
+          - quay.io/sclorg/postgresql-16-c9s:latest
+          kind: Deployment
+          message: deployment.apps/payments-db configured
+          name: payments-db
+          namespace: mayabank-mq-local
+          status: Synced
+          syncPhase: Sync
+          version: v1
+        revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+        source:
+          directory:
+            include: '{database.yaml}'
+          path: deploy/idempotency
+          repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+          targetRevision: feature/covea-eda-i1-i4
+    reconciledAt: "2026-09-15T13:47:37Z"
+    resources:
+    - health:
+        status: Healthy
+      kind: PersistentVolumeClaim
+      name: payments-db-data
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - health:
+        status: Healthy
+      kind: Service
+      name: payments-db
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - group: apps
+      health:
+        status: Healthy
+      kind: Deployment
+      name: payments-db
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+      name: allow-payment-db-egress
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+      name: allow-payments-to-db
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    sourceHydrator: {}
+    sourceType: Directory
+    summary:
+      images:
+      - quay.io/sclorg/postgresql-16-c9s:latest
+    sync:
+      comparedTo:
+        destination:
+          namespace: mayabank-mq-local
+          server: https://kubernetes.default.svc
+        source:
+          directory:
+            include: '{database.yaml}'
+          path: deploy/idempotency
+          repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+          targetRevision: feature/covea-eda-i1-i4
+      revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+      status: Synced
+kind: List
+metadata:
+  resourceVersion: ""

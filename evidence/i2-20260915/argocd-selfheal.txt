@@ -1,0 +1,14 @@
+===== ARGO INITIAL STATE =====
+NAME                     SYNC     HEALTH    REV
+mayabank-mq-local-core   Synced   Healthy   feature/covea-eda-i1-i4
+mayabank-mq-local-db     Synced   Healthy   feature/covea-eda-i1-i4
+
+===== PAYMENT PROCESSING BEFORE DRIFT =====
+NAME                 DESIRED   READY
+payment-processing   1         1
+===== CREATION DU DRIFT =====
+NAME                 DESIRED   READY
+payment-processing   0         <none>
+===== ATTENTE SELF HEAL =====
+15:50:06 replicas=1 ready=1 sync=Synced health=Healthy
+SELF_HEAL_OK

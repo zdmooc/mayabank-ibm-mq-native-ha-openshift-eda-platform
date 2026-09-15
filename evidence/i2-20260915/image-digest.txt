@@ -1,0 +1,1 @@
+image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments@sha256:b310a6ec38360f0497bbde53d3fa5e7873bef334810d7591754acd5c9f26e629

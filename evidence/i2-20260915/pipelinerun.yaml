@@ -1,0 +1,90 @@
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  annotations:
+    chains.tekton.dev/signed: "true"
+    results.tekton.dev/record: mayabank-mq-build/results/a5cdffd1-c0c0-432d-aafc-5a2950281ce3/records/a5cdffd1-c0c0-432d-aafc-5a2950281ce3
+    results.tekton.dev/result: mayabank-mq-build/results/a5cdffd1-c0c0-432d-aafc-5a2950281ce3
+    results.tekton.dev/stored: "true"
+  creationTimestamp: "2026-09-15T12:53:56Z"
+  finalizers:
+  - chains.tekton.dev/pipelinerun
+  - results.tekton.dev/pipelinerun
+  generateName: payments-ci-
+  generation: 1
+  labels:
+    tekton.dev/pipeline: payments-ci
+  name: payments-ci-7xxc2
+  namespace: mayabank-mq-build
+  resourceVersion: "1202168"
+  uid: a5cdffd1-c0c0-432d-aafc-5a2950281ce3
+spec:
+  params:
+  - name: revision
+    value: feature/covea-eda-i1-i4
+  pipelineRef:
+    name: payments-ci
+  taskRunTemplate:
+    serviceAccountName: tekton-payments
+  timeouts:
+    pipeline: 1h0m0s
+  workspaces:
+  - name: source
+    volumeClaimTemplate:
+      metadata: {}
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 2Gi
+      status: {}
+status:
+  childReferences:
+  - apiVersion: tekton.dev/v1
+    kind: TaskRun
+    name: payments-ci-7xxc2-build-test-scan
+    pipelineTaskName: build-test-scan
+  completionTime: "2026-09-15T12:58:41Z"
+  conditions:
+  - lastTransitionTime: "2026-09-15T12:58:41Z"
+    message: 'Tasks Completed: 1 (Failed: 0, Cancelled 0), Skipped: 0'
+    reason: Succeeded
+    status: "True"
+    type: Succeeded
+  pipelineSpec:
+    params:
+    - default: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+      name: git-url
+      type: string
+    - default: main
+      name: revision
+      type: string
+    tasks:
+    - name: build-test-scan
+      params:
+      - name: git-url
+        value: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+      - name: revision
+        value: feature/covea-eda-i1-i4
+      taskRef:
+        kind: Task
+        name: payments-ci-build
+      workspaces:
+      - name: source
+        workspace: source
+    workspaces:
+    - name: source
+  provenance:
+    featureFlags:
+      awaitSidecarReadiness: true
+      coschedule: workspaces
+      enableAPIFields: beta
+      enableProvenanceInStatus: true
+      enforceNonfalsifiability: none
+      maxResultSize: 4096
+      resultExtractionMethod: termination-message
+      runningInEnvWithInjectedSidecars: true
+      sendCloudEventsForRuns: true
+      verificationNoMatchPolicy: ignore
+  startTime: "2026-09-15T12:53:56Z"

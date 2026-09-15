@@ -1,0 +1,513 @@
+apiVersion: v1
+items:
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"argoproj.io/v1alpha1","kind":"Application","metadata":{"annotations":{},"name":"mayabank-mq-local-core","namespace":"openshift-gitops"},"spec":{"destination":{"namespace":"mayabank-mq-local","server":"https://kubernetes.default.svc"},"project":"mayabank-mq","source":{"directory":{"include":"{mq-connected.yaml,network.yaml,processor.yaml}"},"path":"deploy/payments","repoURL":"https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git","targetRevision":"feature/covea-eda-i1-i4"},"syncPolicy":{"automated":{"prune":true,"selfHeal":true},"syncOptions":["CreateNamespace=true","ApplyOutOfSyncOnly=true"]}}}
+    creationTimestamp: "2026-09-15T13:03:59Z"
+    generation: 25
+    name: mayabank-mq-local-core
+    namespace: openshift-gitops
+    resourceVersion: "1207411"
+    uid: a44211dd-bc03-44a8-ab84-12bd5f4e59f8
+  spec:
+    destination:
+      namespace: mayabank-mq-local
+      server: https://kubernetes.default.svc
+    project: mayabank-mq
+    source:
+      directory:
+        include: '{mq-connected.yaml,network.yaml,processor.yaml}'
+      path: deploy/payments
+      repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+      targetRevision: feature/covea-eda-i1-i4
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+      syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+  status:
+    conditions:
+    - lastTransitionTime: "2026-09-15T13:09:29Z"
+      message: 'Failed last sync attempt to [23bdc5d8b726db8a7902e2117b0045060d304d90]:
+        one or more objects failed to apply, reason: error when patching "/dev/shm/3603398678":
+        serviceaccounts "payments" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "serviceaccounts" in API group "" in the namespace "mayabank-mq-local",error
+        when patching "/dev/shm/3630489301": services "mq" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "services" in API group "" in the namespace "mayabank-mq-local",error
+        when patching "/dev/shm/3611624840": deployments.apps "mq" is forbidden: User
+        "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "deployments" in API group "apps" in the namespace "mayabank-mq-local",error
+        when patching "/dev/shm/4034855092": deployments.apps "payment-processing"
+        is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "deployments" in API group "apps" in the namespace "mayabank-mq-local",error
+        when patching "/dev/shm/3290763621": networkpolicies.networking.k8s.io "allow-payment-clients-to-mq"
+        is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "networkpolicies" in API group "networking.k8s.io" in
+        the namespace "mayabank-mq-local",error when patching "/dev/shm/926654477":
+        networkpolicies.networking.k8s.io "allow-payments-mq-and-dns" is forbidden:
+        User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "networkpolicies" in API group "networking.k8s.io" in
+        the namespace "mayabank-mq-local",error when patching "/dev/shm/175179761":
+        networkpolicies.networking.k8s.io "mq-deny-network" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "networkpolicies" in API group "networking.k8s.io" in
+        the namespace "mayabank-mq-local",error when patching "/dev/shm/120059900":
+        serviceaccounts "mq" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "serviceaccounts" in API group "" in the namespace "mayabank-mq-local"
+        (retried 5 times).'
+      type: SyncError
+    controllerNamespace: openshift-gitops
+    health:
+      lastTransitionTime: "2026-09-15T13:04:01Z"
+      status: Healthy
+    operationState:
+      finishedAt: "2026-09-15T13:09:29Z"
+      message: 'one or more objects failed to apply, reason: error when patching "/dev/shm/3603398678":
+        serviceaccounts "payments" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "serviceaccounts" in API group "" in the namespace "mayabank-mq-local",error
+        when patching "/dev/shm/3630489301": services "mq" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "services" in API group "" in the namespace "mayabank-mq-local",error
+        when patching "/dev/shm/3611624840": deployments.apps "mq" is forbidden: User
+        "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "deployments" in API group "apps" in the namespace "mayabank-mq-local",error
+        when patching "/dev/shm/4034855092": deployments.apps "payment-processing"
+        is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "deployments" in API group "apps" in the namespace "mayabank-mq-local",error
+        when patching "/dev/shm/3290763621": networkpolicies.networking.k8s.io "allow-payment-clients-to-mq"
+        is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "networkpolicies" in API group "networking.k8s.io" in
+        the namespace "mayabank-mq-local",error when patching "/dev/shm/926654477":
+        networkpolicies.networking.k8s.io "allow-payments-mq-and-dns" is forbidden:
+        User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "networkpolicies" in API group "networking.k8s.io" in
+        the namespace "mayabank-mq-local",error when patching "/dev/shm/175179761":
+        networkpolicies.networking.k8s.io "mq-deny-network" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "networkpolicies" in API group "networking.k8s.io" in
+        the namespace "mayabank-mq-local",error when patching "/dev/shm/120059900":
+        serviceaccounts "mq" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "serviceaccounts" in API group "" in the namespace "mayabank-mq-local"
+        (retried 5 times).'
+      operation:
+        initiatedBy:
+          automated: true
+        retry:
+          limit: 5
+        sync:
+          prune: true
+          revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+          source:
+            directory:
+              include: '{mq-connected.yaml,network.yaml,processor.yaml}'
+            path: deploy/payments
+            repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+            targetRevision: feature/covea-eda-i1-i4
+          syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+      phase: Failed
+      retryCount: 5
+      startedAt: "2026-09-15T13:04:01Z"
+      syncResult:
+        resources:
+        - group: networking.k8s.io
+          hookPhase: Failed
+          kind: NetworkPolicy
+          message: 'error when patching "/dev/shm/3290763621": networkpolicies.networking.k8s.io
+            "allow-payment-clients-to-mq" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+            cannot patch resource "networkpolicies" in API group "networking.k8s.io"
+            in the namespace "mayabank-mq-local"'
+          name: allow-payment-clients-to-mq
+          namespace: mayabank-mq-local
+          status: SyncFailed
+          syncPhase: Sync
+          version: v1
+        - group: networking.k8s.io
+          hookPhase: Failed
+          kind: NetworkPolicy
+          message: 'error when patching "/dev/shm/926654477": networkpolicies.networking.k8s.io
+            "allow-payments-mq-and-dns" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+            cannot patch resource "networkpolicies" in API group "networking.k8s.io"
+            in the namespace "mayabank-mq-local"'
+          name: allow-payments-mq-and-dns
+          namespace: mayabank-mq-local
+          status: SyncFailed
+          syncPhase: Sync
+          version: v1
+        - group: networking.k8s.io
+          hookPhase: Failed
+          kind: NetworkPolicy
+          message: 'error when patching "/dev/shm/175179761": networkpolicies.networking.k8s.io
+            "mq-deny-network" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+            cannot patch resource "networkpolicies" in API group "networking.k8s.io"
+            in the namespace "mayabank-mq-local"'
+          name: mq-deny-network
+          namespace: mayabank-mq-local
+          status: SyncFailed
+          syncPhase: Sync
+          version: v1
+        - group: ""
+          hookPhase: Failed
+          kind: ServiceAccount
+          message: 'error when patching "/dev/shm/3603398678": serviceaccounts "payments"
+            is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+            cannot patch resource "serviceaccounts" in API group "" in the namespace
+            "mayabank-mq-local"'
+          name: payments
+          namespace: mayabank-mq-local
+          status: SyncFailed
+          syncPhase: Sync
+          version: v1
+        - group: ""
+          hookPhase: Failed
+          kind: ServiceAccount
+          message: 'error when patching "/dev/shm/120059900": serviceaccounts "mq"
+            is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+            cannot patch resource "serviceaccounts" in API group "" in the namespace
+            "mayabank-mq-local"'
+          name: mq
+          namespace: mayabank-mq-local
+          status: SyncFailed
+          syncPhase: Sync
+          version: v1
+        - group: ""
+          hookPhase: Failed
+          kind: Service
+          message: 'error when patching "/dev/shm/3630489301": services "mq" is forbidden:
+            User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+            cannot patch resource "services" in API group "" in the namespace "mayabank-mq-local"'
+          name: mq
+          namespace: mayabank-mq-local
+          status: SyncFailed
+          syncPhase: Sync
+          version: v1
+        - group: apps
+          hookPhase: Failed
+          images:
+          - image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0
+          kind: Deployment
+          message: 'error when patching "/dev/shm/4034855092": deployments.apps "payment-processing"
+            is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+            cannot patch resource "deployments" in API group "apps" in the namespace
+            "mayabank-mq-local"'
+          name: payment-processing
+          namespace: mayabank-mq-local
+          status: SyncFailed
+          syncPhase: Sync
+          version: v1
+        - group: apps
+          hookPhase: Failed
+          images:
+          - icr.io/ibm-messaging/mq@sha256:28cd7e9dc413eced83b21e02cd3683966f19ef22867bbc7ca8c1ed19d062f986
+          kind: Deployment
+          message: 'error when patching "/dev/shm/3611624840": deployments.apps "mq"
+            is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+            cannot patch resource "deployments" in API group "apps" in the namespace
+            "mayabank-mq-local"'
+          name: mq
+          namespace: mayabank-mq-local
+          status: SyncFailed
+          syncPhase: Sync
+          version: v1
+        revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+        source:
+          directory:
+            include: '{mq-connected.yaml,network.yaml,processor.yaml}'
+          path: deploy/payments
+          repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+          targetRevision: feature/covea-eda-i1-i4
+    reconciledAt: "2026-09-15T13:09:29Z"
+    resources:
+    - kind: ConfigMap
+      name: mq-config
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - kind: Namespace
+      name: mayabank-mq-local
+      status: Synced
+      version: v1
+    - health:
+        status: Healthy
+      kind: PersistentVolumeClaim
+      name: mq-data
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - health:
+        status: Healthy
+      kind: Service
+      name: mq
+      namespace: mayabank-mq-local
+      status: OutOfSync
+      version: v1
+    - kind: ServiceAccount
+      name: mq
+      namespace: mayabank-mq-local
+      status: OutOfSync
+      version: v1
+    - kind: ServiceAccount
+      name: payments
+      namespace: mayabank-mq-local
+      status: OutOfSync
+      version: v1
+    - group: apps
+      health:
+        status: Healthy
+      kind: Deployment
+      name: mq
+      namespace: mayabank-mq-local
+      status: OutOfSync
+      version: v1
+    - group: apps
+      health:
+        status: Healthy
+      kind: Deployment
+      name: payment-processing
+      namespace: mayabank-mq-local
+      status: OutOfSync
+      version: v1
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+      name: allow-payment-clients-to-mq
+      namespace: mayabank-mq-local
+      status: OutOfSync
+      version: v1
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+      name: allow-payments-mq-and-dns
+      namespace: mayabank-mq-local
+      status: OutOfSync
+      version: v1
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+      name: mq-deny-network
+      namespace: mayabank-mq-local
+      status: OutOfSync
+      version: v1
+    sourceHydrator: {}
+    sourceType: Directory
+    summary:
+      images:
+      - icr.io/ibm-messaging/mq@sha256:28cd7e9dc413eced83b21e02cd3683966f19ef22867bbc7ca8c1ed19d062f986
+      - image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments@sha256:b607d57ac9c63e174a8f8591eba3a7d82fea42ef11700f4ecf17bfb86472a3c3
+    sync:
+      comparedTo:
+        destination:
+          namespace: mayabank-mq-local
+          server: https://kubernetes.default.svc
+        source:
+          directory:
+            include: '{mq-connected.yaml,network.yaml,processor.yaml}'
+          path: deploy/payments
+          repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+          targetRevision: feature/covea-eda-i1-i4
+      revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+      status: OutOfSync
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"argoproj.io/v1alpha1","kind":"Application","metadata":{"annotations":{},"name":"mayabank-mq-local-db","namespace":"openshift-gitops"},"spec":{"destination":{"namespace":"mayabank-mq-local","server":"https://kubernetes.default.svc"},"project":"mayabank-mq","source":{"directory":{"include":"{database.yaml}"},"path":"deploy/idempotency","repoURL":"https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git","targetRevision":"feature/covea-eda-i1-i4"},"syncPolicy":{"automated":{"prune":true,"selfHeal":true},"syncOptions":["CreateNamespace=true","ApplyOutOfSyncOnly=true"]}}}
+    creationTimestamp: "2026-09-15T13:03:59Z"
+    generation: 24
+    name: mayabank-mq-local-db
+    namespace: openshift-gitops
+    resourceVersion: "1208504"
+    uid: 5a9c81e1-8266-431f-b133-73c3565add5e
+  spec:
+    destination:
+      namespace: mayabank-mq-local
+      server: https://kubernetes.default.svc
+    project: mayabank-mq
+    source:
+      directory:
+        include: '{database.yaml}'
+      path: deploy/idempotency
+      repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+      targetRevision: feature/covea-eda-i1-i4
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+      syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+  status:
+    conditions:
+    - lastTransitionTime: "2026-09-15T13:09:24Z"
+      message: 'Failed last sync attempt to [23bdc5d8b726db8a7902e2117b0045060d304d90]:
+        one or more objects failed to apply, reason: error when patching "/dev/shm/13435288":
+        services "payments-db" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "services" in API group "" in the namespace "mayabank-mq-local",error
+        when patching "/dev/shm/364531766": deployments.apps "payments-db" is forbidden:
+        User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "deployments" in API group "apps" in the namespace "mayabank-mq-local",error
+        when patching "/dev/shm/3760657369": networkpolicies.networking.k8s.io "allow-payment-db-egress"
+        is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "networkpolicies" in API group "networking.k8s.io" in
+        the namespace "mayabank-mq-local",error when patching "/dev/shm/965437792":
+        networkpolicies.networking.k8s.io "allow-payments-to-db" is forbidden: User
+        "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "networkpolicies" in API group "networking.k8s.io" in
+        the namespace "mayabank-mq-local" (retried 5 times).'
+      type: SyncError
+    controllerNamespace: openshift-gitops
+    health:
+      lastTransitionTime: "2026-09-15T13:04:01Z"
+      status: Healthy
+    operationState:
+      finishedAt: "2026-09-15T13:09:24Z"
+      message: 'one or more objects failed to apply, reason: error when patching "/dev/shm/13435288":
+        services "payments-db" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "services" in API group "" in the namespace "mayabank-mq-local",error
+        when patching "/dev/shm/364531766": deployments.apps "payments-db" is forbidden:
+        User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "deployments" in API group "apps" in the namespace "mayabank-mq-local",error
+        when patching "/dev/shm/3760657369": networkpolicies.networking.k8s.io "allow-payment-db-egress"
+        is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "networkpolicies" in API group "networking.k8s.io" in
+        the namespace "mayabank-mq-local",error when patching "/dev/shm/965437792":
+        networkpolicies.networking.k8s.io "allow-payments-to-db" is forbidden: User
+        "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+        cannot patch resource "networkpolicies" in API group "networking.k8s.io" in
+        the namespace "mayabank-mq-local" (retried 5 times).'
+      operation:
+        initiatedBy:
+          automated: true
+        retry:
+          limit: 5
+        sync:
+          prune: true
+          revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+          source:
+            directory:
+              include: '{database.yaml}'
+            path: deploy/idempotency
+            repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+            targetRevision: feature/covea-eda-i1-i4
+          syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true
+      phase: Failed
+      retryCount: 5
+      startedAt: "2026-09-15T13:04:01Z"
+      syncResult:
+        resources:
+        - group: networking.k8s.io
+          hookPhase: Failed
+          kind: NetworkPolicy
+          message: 'error when patching "/dev/shm/965437792": networkpolicies.networking.k8s.io
+            "allow-payments-to-db" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+            cannot patch resource "networkpolicies" in API group "networking.k8s.io"
+            in the namespace "mayabank-mq-local"'
+          name: allow-payments-to-db
+          namespace: mayabank-mq-local
+          status: SyncFailed
+          syncPhase: Sync
+          version: v1
+        - group: networking.k8s.io
+          hookPhase: Failed
+          kind: NetworkPolicy
+          message: 'error when patching "/dev/shm/3760657369": networkpolicies.networking.k8s.io
+            "allow-payment-db-egress" is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+            cannot patch resource "networkpolicies" in API group "networking.k8s.io"
+            in the namespace "mayabank-mq-local"'
+          name: allow-payment-db-egress
+          namespace: mayabank-mq-local
+          status: SyncFailed
+          syncPhase: Sync
+          version: v1
+        - group: ""
+          hookPhase: Failed
+          kind: Service
+          message: 'error when patching "/dev/shm/13435288": services "payments-db"
+            is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+            cannot patch resource "services" in API group "" in the namespace "mayabank-mq-local"'
+          name: payments-db
+          namespace: mayabank-mq-local
+          status: SyncFailed
+          syncPhase: Sync
+          version: v1
+        - group: apps
+          hookPhase: Failed
+          images:
+          - quay.io/sclorg/postgresql-16-c9s:latest
+          kind: Deployment
+          message: 'error when patching "/dev/shm/364531766": deployments.apps "payments-db"
+            is forbidden: User "system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller"
+            cannot patch resource "deployments" in API group "apps" in the namespace
+            "mayabank-mq-local"'
+          name: payments-db
+          namespace: mayabank-mq-local
+          status: SyncFailed
+          syncPhase: Sync
+          version: v1
+        revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+        source:
+          directory:
+            include: '{database.yaml}'
+          path: deploy/idempotency
+          repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+          targetRevision: feature/covea-eda-i1-i4
+    reconciledAt: "2026-09-15T13:11:54Z"
+    resources:
+    - health:
+        status: Healthy
+      kind: PersistentVolumeClaim
+      name: payments-db-data
+      namespace: mayabank-mq-local
+      status: Synced
+      version: v1
+    - health:
+        status: Healthy
+      kind: Service
+      name: payments-db
+      namespace: mayabank-mq-local
+      status: OutOfSync
+      version: v1
+    - group: apps
+      health:
+        status: Healthy
+      kind: Deployment
+      name: payments-db
+      namespace: mayabank-mq-local
+      status: OutOfSync
+      version: v1
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+      name: allow-payment-db-egress
+      namespace: mayabank-mq-local
+      status: OutOfSync
+      version: v1
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+      name: allow-payments-to-db
+      namespace: mayabank-mq-local
+      status: OutOfSync
+      version: v1
+    sourceHydrator: {}
+    sourceType: Directory
+    summary:
+      images:
+      - quay.io/sclorg/postgresql-16-c9s@sha256:72312c80dc47d241183001771041f4eccbd7d905d4e85c85cca6fbeffa5b024e
+    sync:
+      comparedTo:
+        destination:
+          namespace: mayabank-mq-local
+          server: https://kubernetes.default.svc
+        source:
+          directory:
+            include: '{database.yaml}'
+          path: deploy/idempotency
+          repoURL: https://github.com/zdmooc/mayabank-ibm-mq-native-ha-openshift-eda-platform.git
+          targetRevision: feature/covea-eda-i1-i4
+      revision: 23bdc5d8b726db8a7902e2117b0045060d304d90
+      status: OutOfSync
+kind: List
+metadata:
+  resourceVersion: ""

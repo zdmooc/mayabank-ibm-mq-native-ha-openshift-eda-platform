@@ -1,0 +1,3 @@
+NAME                     SYNC     HEALTH    REV
+mayabank-mq-local-core   Synced   Healthy   feature/covea-eda-i1-i4
+mayabank-mq-local-db     Synced   Healthy   feature/covea-eda-i1-i4
