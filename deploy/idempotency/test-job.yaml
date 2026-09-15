@@ -15,6 +15,7 @@ spec:
       restartPolicy: Never
       serviceAccountName: payments
       automountServiceAccountToken: false
+      enableServiceLinks: false
       securityContext:
         seccompProfile:
           type: RuntimeDefault
@@ -27,6 +28,8 @@ spec:
         env:
         - name: MQ_HOST
           value: mq
+        - name: MQ_PORT
+          value: "1414"
         - name: MQ_PASSWORD_FILE
           value: /etc/mayabank/mq/mqAppPassword
         - name: DB_PASSWORD_FILE
