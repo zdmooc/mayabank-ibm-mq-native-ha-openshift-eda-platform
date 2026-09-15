@@ -28,7 +28,7 @@ spec:
         - name: MQ_QUEUE_MANAGER
           value: QM.MAYABANK
         - name: MQ_CHANNEL
-          value: PAYMENT.PROCESSING.SVRCONN
+          value: PAY.PROC.SVRCONN
         - name: MQ_AUTH_MODE
           value: mtls
         - name: MQ_TLS_KEYSTORE
@@ -117,7 +117,7 @@ spec:
             - name: MQ_QUEUE_MANAGER
               value: QM.MAYABANK
             - name: MQ_CHANNEL
-              value: PAYMENT.ORDER.SVRCONN
+              value: PAY.ORDER.SVRCONN
             - name: MQ_AUTH_MODE
               value: mtls
             - name: MQ_TLS_KEYSTORE
@@ -185,7 +185,7 @@ spec:
             - name: MQ_QUEUE_MANAGER
               value: QM.MAYABANK
             - name: MQ_CHANNEL
-              value: PAYMENT.PROCESSING.SVRCONN
+              value: PAY.PROC.SVRCONN
             - name: MQ_AUTH_MODE
               value: mtls
             - name: MQ_TLS_KEYSTORE
@@ -241,7 +241,7 @@ spec:
             - name: MQ_QUEUE_MANAGER
               value: QM.MAYABANK
             - name: MQ_CHANNEL
-              value: PAYMENT.ORDER.SVRCONN
+              value: PAY.ORDER.SVRCONN
             - name: MQ_AUTH_MODE
               value: mtls
             - name: MQ_TLS_KEYSTORE
@@ -306,7 +306,7 @@ spec:
             - name: MQ_QUEUE_MANAGER
               value: QM.MAYABANK
             - name: MQ_CHANNEL
-              value: PAYMENT.ORDER.SVRCONN
+              value: PAY.ORDER.SVRCONN
             - name: MQ_AUTH_MODE
               value: mtls
             - name: MQ_TLS_KEYSTORE
