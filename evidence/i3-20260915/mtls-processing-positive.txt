@@ -1,0 +1,2 @@
+READY: authenticated MQ connection; simulation only
+NEW paymentId=0ade0640-1beb-45d7-a13a-ecd4ed3dc61d

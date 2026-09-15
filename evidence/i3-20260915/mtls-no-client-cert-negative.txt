@@ -1,0 +1,37 @@
+Exception in thread "main" com.ibm.msg.client.jms.DetailedIllegalStateException: JMSWMQ0018: Failed to connect to queue manager 'QM.MAYABANK' with connection mode 'Client' and host name 'mq(1414)'.
+Check the queue manager is started and if running in client mode, check there is a listener running. Please see the linked exception for more information.
+	at com.ibm.msg.client.wmq.common.internal.Reason.reasonToException(Reason.java:603)
+	at com.ibm.msg.client.wmq.common.internal.Reason.createException(Reason.java:229)
+	at com.ibm.msg.client.wmq.internal.WMQConnection.<init>(WMQConnection.java:520)
+	at com.ibm.msg.client.wmq.factories.WMQConnectionFactory.createV7ProviderConnection(WMQConnectionFactory.java:9710)
+	at com.ibm.msg.client.wmq.factories.WMQConnectionFactory.createProviderConnection(WMQConnectionFactory.java:8928)
+	at com.ibm.msg.client.jms.admin.JmsConnectionFactoryImpl._createConnection(JmsConnectionFactoryImpl.java:322)
+	at com.ibm.msg.client.jms.admin.JmsConnectionFactoryImpl.createConnection(JmsConnectionFactoryImpl.java:242)
+	at com.ibm.mq.jms.MQConnectionFactory.createCommonConnection(MQConnectionFactory.java:6680)
+	at com.ibm.mq.jms.MQConnectionFactory.createConnection(MQConnectionFactory.java:6709)
+	at fr.mayabank.Mq.connect(Mq.java:31)
+	at fr.mayabank.PaymentOrder.run(PaymentOrder.java:10)
+	at fr.mayabank.Main.main(Main.java:14)
+Caused by: com.ibm.mq.MQException: JMSCMQ0001: IBM MQ call failed with compcode '2' ('MQCC_FAILED') reason '2059' ('MQRC_Q_MGR_NOT_AVAILABLE').
+	at com.ibm.msg.client.wmq.common.internal.Reason.createException(Reason.java:217)
+	... 10 more
+Caused by: com.ibm.mq.jmqi.JmqiException: CC=2;RC=2059;AMQ9204: Connection to host 'mq(1414)' rejected. [1=com.ibm.mq.jmqi.JmqiException[CC=2;RC=2059;AMQ9503: Channel negotiation failed. [3=PAY.ORDER.SVRCONN]],3=mq(1414),4=,5=RemoteConnection.analyseErrorSegment]
+	at com.ibm.mq.jmqi.remote.api.RemoteFAP$Connector.jmqiConnect(RemoteFAP.java:13951)
+	at com.ibm.mq.jmqi.remote.api.RemoteFAP$Connector.access$200(RemoteFAP.java:13350)
+	at com.ibm.mq.jmqi.remote.api.RemoteFAP.jmqiConnect(RemoteFAP.java:1549)
+	at com.ibm.mq.jmqi.remote.api.RemoteFAP.jmqiConnect(RemoteFAP.java:1418)
+	at com.ibm.mq.ese.jmqi.InterceptedJmqiImpl.jmqiConnect(InterceptedJmqiImpl.java:377)
+	at com.ibm.mq.ese.jmqi.ESEJMQI.jmqiConnect(ESEJMQI.java:562)
+	at com.ibm.msg.client.wmq.internal.WMQConnection.<init>(WMQConnection.java:452)
+	... 9 more
+Caused by: com.ibm.mq.jmqi.JmqiException: CC=2;RC=2059;AMQ9503: Channel negotiation failed. [3=PAY.ORDER.SVRCONN]
+	at com.ibm.mq.jmqi.remote.impl.RemoteConnection.analyseErrorSegment(RemoteConnection.java:4852)
+	at com.ibm.mq.jmqi.remote.impl.RemoteConnection.receiveTSH(RemoteConnection.java:3549)
+	at com.ibm.mq.jmqi.remote.impl.RemoteConnection.initSess(RemoteConnection.java:1421)
+	at com.ibm.mq.jmqi.remote.impl.RemoteConnection.connect(RemoteConnection.java:1009)
+	at com.ibm.mq.jmqi.remote.impl.RemoteConnectionSpecification.getNewConnection(RemoteConnectionSpecification.java:691)
+	at com.ibm.mq.jmqi.remote.impl.RemoteConnectionSpecification.getSessionFromNewConnection(RemoteConnectionSpecification.java:283)
+	at com.ibm.mq.jmqi.remote.impl.RemoteConnectionSpecification.getSession(RemoteConnectionSpecification.java:170)
+	at com.ibm.mq.jmqi.remote.impl.RemoteConnectionPool.getSession(RemoteConnectionPool.java:128)
+	at com.ibm.mq.jmqi.remote.api.RemoteFAP$Connector.jmqiConnect(RemoteFAP.java:13615)
+	... 15 more

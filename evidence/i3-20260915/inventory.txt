@@ -1,0 +1,103 @@
+===== I3 PLATFORM INVENTORY =====
+===== MQ VERSION =====
+MQPOD=mq-fbd8846c7-725vw
+Name:        IBM MQ
+Version:     9.4.5.1
+Level:       p945-001-260423.1_i1
+BuildType:   IKAP - (Production)
+Platform:    IBM MQ for Linux (x86-64 platform)
+Mode:        64-bit
+O/S:         Linux 5.14.0-687.29.1.el9_8.x86_64
+O/S Details: Red Hat Enterprise Linux 9.7 (Plow)
+InstName:    Installation1
+InstDesc:    IBM MQ V9.4.5.1 (Unzipped)
+Primary:     N/A
+InstPath:    /opt/mqm
+DataPath:    /mnt/mqm/data
+MaxCmdLevel: 945
+LicenseType: Developer
+ReleaseType: Continuous Delivery (CD)
+===== MQ TLS TOOLS =====
+/opt/mqm/bin/runmqakm
+/usr/bin/openssl
+===== MQ CURRENT ENV =====
+LICENSE=accept
+MQ_QMGR_NAME=QM.MAYABANK
+MQ_DEV=true
+MQ_CONNAUTH_USE_HTP=true
+MQ_APP_PASSWORD=
+MQ_ENABLE_EMBEDDED_WEB_SERVER=false
+MQ_ENABLE_METRICS=false
+MQ_LOGGING_CONSOLE_FORMAT=json
+===== MQ CHANNELS =====
+5724-H72 (C) Copyright IBM Corp. 1994, 2026.
+Starting MQSC for queue manager QM.MAYABANK.
+
+
+     1 : DISPLAY CHANNEL(*) CHLTYPE SSLCAUTH SSLCIPH MCAUSER
+AMQ8414I: Display Channel details.
+   CHANNEL(DEV.ADMIN.SVRCONN)              CHLTYPE(SVRCONN)
+   MCAUSER( )                              SSLCAUTH(REQUIRED)
+   SSLCIPH( )                           
+AMQ8414I: Display Channel details.
+   CHANNEL(DEV.APP.SVRCONN)                CHLTYPE(SVRCONN)
+   MCAUSER(app)                            SSLCAUTH(REQUIRED)
+   SSLCIPH( )                           
+AMQ8414I: Display Channel details.
+   CHANNEL(SYSTEM.AUTO.RECEIVER)           CHLTYPE(RCVR)
+   MCAUSER( )                              SSLCAUTH(REQUIRED)
+   SSLCIPH( )                           
+AMQ8414I: Display Channel details.
+   CHANNEL(SYSTEM.AUTO.SVRCONN)            CHLTYPE(SVRCONN)
+   MCAUSER( )                              SSLCAUTH(REQUIRED)
+   SSLCIPH( )                           
+AMQ8414I: Display Channel details.
+   CHANNEL(SYSTEM.DEF.AMQP)                CHLTYPE(AMQP)
+   MCAUSER( )                              SSLCAUTH(REQUIRED)
+   SSLCIPH( )                           
+AMQ8414I: Display Channel details.
+   CHANNEL(SYSTEM.DEF.CLUSRCVR)            CHLTYPE(CLUSRCVR)
+   MCAUSER( )                              SSLCAUTH(REQUIRED)
+   SSLCIPH( )                           
+AMQ8414I: Display Channel details.
+   CHANNEL(SYSTEM.DEF.CLUSSDR)             CHLTYPE(CLUSSDR)
+   MCAUSER( )                              SSLCIPH( )
+AMQ8414I: Display Channel details.
+   CHANNEL(SYSTEM.DEF.RECEIVER)            CHLTYPE(RCVR)
+   MCAUSER( )                              SSLCAUTH(REQUIRED)
+   SSLCIPH( )                           
+AMQ8414I: Display Channel details.
+   CHANNEL(SYSTEM.DEF.REQUESTER)           CHLTYPE(RQSTR)
+   MCAUSER( )                              SSLCAUTH(REQUIRED)
+   SSLCIPH( )                           
+AMQ8414I: Display Channel details.
+   CHANNEL(SYSTEM.DEF.SENDER)              CHLTYPE(SDR)
+   MCAUSER( )                              SSLCIPH( )
+AMQ8414I: Display Channel details.
+   CHANNEL(SYSTEM.DEF.SERVER)              CHLTYPE(SVR)
+   MCAUSER( )                              SSLCAUTH(REQUIRED)
+   SSLCIPH( )                           
+AMQ8414I: Display Channel details.
+   CHANNEL(SYSTEM.DEF.SVRCONN)             CHLTYPE(SVRCONN)
+   MCAUSER( )                              SSLCAUTH(REQUIRED)
+   SSLCIPH( )                           
+AMQ8414I: Display Channel details.
+   CHANNEL(SYSTEM.DEF.CLNTCONN)            CHLTYPE(CLNTCONN)
+   SSLCIPH( )                           
+One MQSC command read.
+No commands have a syntax error.
+All valid MQSC commands were processed.
+===== MONITORING CRDS =====
+podmonitors                           pmon                                                                                   monitoring.coreos.com/v1                      true         PodMonitor
+prometheusrules                       promrule                                                                               monitoring.coreos.com/v1                      true         PrometheusRule
+servicemonitors                       smon                                                                                   monitoring.coreos.com/v1                      true         ServiceMonitor
+===== MONITORING NAMESPACES =====
+openshift-monitoring                               Active   49d
+openshift-user-workload-monitoring                 Active   49d
+===== USER WORKLOAD MONITORING =====
+No resources found in openshift-user-workload-monitoring namespace.
+===== MQ SERVICE =====
+NAME   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE     SELECTOR
+mq     ClusterIP   10.217.5.205   <none>        1414/TCP   5d23h   app=mayabank-mq
+===== MQ PORT 9157 CURRENT TEST =====
+curl: (7) Failed to connect to 127.0.0.1 port 9157: Connection refused

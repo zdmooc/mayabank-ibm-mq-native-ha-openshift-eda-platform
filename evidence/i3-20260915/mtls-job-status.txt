@@ -1,0 +1,5 @@
+NAME                           STATUS     COMPLETIONS   DURATION   AGE   CONTAINERS   IMAGES                                                                              SELECTOR
+mtls-order-positive            Complete   1/1           13s        12m   payments     image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0   batch.kubernetes.io/controller-uid=a0b525fc-5451-4c7a-bcae-9849e48bae60
+mtls-wrong-channel-negative    Failed     0/1           12m        12m   payments     image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0   batch.kubernetes.io/controller-uid=29c730d4-0318-427d-ba0d-961cdb8fcf00
+mtls-no-client-cert-negative   Failed     0/1           12m        12m   payments     image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0   batch.kubernetes.io/controller-uid=3674bea0-501e-4fc6-be91-117c16adcc61
+mtls-oam-negative              Failed     0/1           12m        12m   payments     image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0   batch.kubernetes.io/controller-uid=031bd819-c8c3-4759-8730-d4a61426f11b

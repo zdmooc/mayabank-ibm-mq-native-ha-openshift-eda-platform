@@ -1,0 +1,1 @@
+ibmmq_qmgr_queue_manager_file_system_free_space_percentage{endpoint="metrics", instance="10.217.0.175:9157", job="mq", namespace="mayabank-mq-local", pod="mq-76fd68584b-wgd9s", qmgr="QM.MAYABANK", service="mq"} => 17.58 @[1789482822.457]

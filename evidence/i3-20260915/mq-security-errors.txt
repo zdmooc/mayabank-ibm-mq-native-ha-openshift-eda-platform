@@ -1,0 +1,250 @@
+ACTION:
+Ensure that DNS is correctly configured on the local system. 
+
+If the address was an IP address then the slow operation was a reverse DNS
+lookup. Some DNS configurations are not capable of reverse DNS lookups and some
+IP addresses have no valid reverse DNS entries. If the problem persists,
+consider disabling reverse DNS lookups until the issue with the DNS can be
+resolved.
+----- amqcrhna.c : 1187 -------------------------------------------------------
+09/15/26 16:15:18 - Process(604.269) User(mqm) Program(amqrmppa)
+                    Host(mq-6f5ccb7dcd-r8ts7) Installation(Installation1)
+                    VRMF(9.4.5.1) QMgr(QM.MAYABANK)
+                    Time(2026-09-15T16:15:18.324Z)
+                    RemoteHost(10.217.0.167)
+                    CommentInsert1(DEV.APP.SVRCONN)
+                    CommentInsert2(10.217.0.167)
+
+AMQ9639E: Remote channel 'DEV.APP.SVRCONN' did not specify a CipherSpec.
+
+EXPLANATION:
+Remote channel 'DEV.APP.SVRCONN' did not specify a CipherSpec when the local
+channel expected one to be specified. 
+
+The remote host is '10.217.0.167'. 
+
+The channel did not start.
+ACTION:
+Change the remote channel 'DEV.APP.SVRCONN' on host '10.217.0.167' to specify a
+CipherSpec so that both ends of the channel have matching CipherSpecs.
+----- amqcccxa.c : 4528 -------------------------------------------------------
+09/15/26 16:15:18 - Process(604.269) User(mqm) Program(amqrmppa)
+                    Host(mq-6f5ccb7dcd-r8ts7) Installation(Installation1)
+                    VRMF(9.4.5.1) QMgr(QM.MAYABANK)
+                    Time(2026-09-15T16:15:18.324Z)
+                    ArithInsert1(536909369)
+                    CommentInsert1(DEV.APP.SVRCONN)
+                    CommentInsert2(604)
+                    CommentInsert3(10.217.0.167)
+
+AMQ9999E: Channel 'DEV.APP.SVRCONN' to host '10.217.0.167' ended abnormally.
+
+EXPLANATION:
+The channel program running under process ID 604 for channel 'DEV.APP.SVRCONN'
+ended abnormally. The host name is '10.217.0.167'; in some cases the host name
+cannot be determined and so is shown as '????'.
+ACTION:
+Look at previous error messages for the channel program in the error logs to
+determine the cause of the failure. Note that this message can be excluded
+completely or suppressed by tuning the "ExcludeMessage" or "SuppressMessage"
+attributes under the "QMErrorLog" stanza in qm.ini. Further information can be
+found in the System Administration Guide.
+----- amqrmrsa.c : 643 --------------------------------------------------------
+09/15/26 16:15:33 - Process(604.272) User(mqm) Program(amqrmppa)
+                    Host(mq-6f5ccb7dcd-r8ts7) Installation(Installation1)
+                    VRMF(9.4.5.1) QMgr(QM.MAYABANK)
+                    Time(2026-09-15T16:15:33.341Z)
+                    ArithInsert1(10)
+                    CommentInsert1(10.217.0.167)
+                    CommentInsert2(getnameinfo)
+
+AMQ9788W: Slow DNS lookup for address '10.217.0.167'.
+
+EXPLANATION:
+An attempt to resolve address '10.217.0.167' using the 'getnameinfo' function
+call took 10 seconds to complete. This might indicate a problem with the DNS
+configuration.
+ACTION:
+Ensure that DNS is correctly configured on the local system. 
+
+If the address was an IP address then the slow operation was a reverse DNS
+lookup. Some DNS configurations are not capable of reverse DNS lookups and some
+IP addresses have no valid reverse DNS entries. If the problem persists,
+consider disabling reverse DNS lookups until the issue with the DNS can be
+resolved.
+----- amqcrhna.c : 1187 -------------------------------------------------------
+09/15/26 16:15:33 - Process(604.272) User(mqm) Program(amqrmppa)
+                    Host(mq-6f5ccb7dcd-r8ts7) Installation(Installation1)
+                    VRMF(9.4.5.1) QMgr(QM.MAYABANK)
+                    Time(2026-09-15T16:15:33.342Z)
+                    RemoteHost(10.217.0.167)
+                    CommentInsert1(DEV.APP.SVRCONN)
+                    CommentInsert2(10.217.0.167)
+
+AMQ9639E: Remote channel 'DEV.APP.SVRCONN' did not specify a CipherSpec.
+
+EXPLANATION:
+Remote channel 'DEV.APP.SVRCONN' did not specify a CipherSpec when the local
+channel expected one to be specified. 
+
+The remote host is '10.217.0.167'. 
+
+The channel did not start.
+ACTION:
+Change the remote channel 'DEV.APP.SVRCONN' on host '10.217.0.167' to specify a
+CipherSpec so that both ends of the channel have matching CipherSpecs.
+----- amqcccxa.c : 4528 -------------------------------------------------------
+09/15/26 16:15:33 - Process(604.272) User(mqm) Program(amqrmppa)
+                    Host(mq-6f5ccb7dcd-r8ts7) Installation(Installation1)
+                    VRMF(9.4.5.1) QMgr(QM.MAYABANK)
+                    Time(2026-09-15T16:15:33.342Z)
+                    ArithInsert1(536909369)
+                    CommentInsert1(DEV.APP.SVRCONN)
+                    CommentInsert2(604)
+                    CommentInsert3(10.217.0.167)
+
+AMQ9999E: Channel 'DEV.APP.SVRCONN' to host '10.217.0.167' ended abnormally.
+
+EXPLANATION:
+The channel program running under process ID 604 for channel 'DEV.APP.SVRCONN'
+ended abnormally. The host name is '10.217.0.167'; in some cases the host name
+cannot be determined and so is shown as '????'.
+ACTION:
+Look at previous error messages for the channel program in the error logs to
+determine the cause of the failure. Note that this message can be excluded
+completely or suppressed by tuning the "ExcludeMessage" or "SuppressMessage"
+attributes under the "QMErrorLog" stanza in qm.ini. Further information can be
+found in the System Administration Guide.
+----- amqrmrsa.c : 643 --------------------------------------------------------
+09/15/26 16:15:48 - Process(604.274) User(mqm) Program(amqrmppa)
+                    Host(mq-6f5ccb7dcd-r8ts7) Installation(Installation1)
+                    VRMF(9.4.5.1) QMgr(QM.MAYABANK)
+                    Time(2026-09-15T16:15:48.369Z)
+                    ArithInsert1(10)
+                    CommentInsert1(10.217.0.167)
+                    CommentInsert2(getnameinfo)
+
+AMQ9788W: Slow DNS lookup for address '10.217.0.167'.
+
+EXPLANATION:
+An attempt to resolve address '10.217.0.167' using the 'getnameinfo' function
+call took 10 seconds to complete. This might indicate a problem with the DNS
+configuration.
+ACTION:
+Ensure that DNS is correctly configured on the local system. 
+
+If the address was an IP address then the slow operation was a reverse DNS
+lookup. Some DNS configurations are not capable of reverse DNS lookups and some
+IP addresses have no valid reverse DNS entries. If the problem persists,
+consider disabling reverse DNS lookups until the issue with the DNS can be
+resolved.
+----- amqcrhna.c : 1187 -------------------------------------------------------
+09/15/26 16:15:48 - Process(604.274) User(mqm) Program(amqrmppa)
+                    Host(mq-6f5ccb7dcd-r8ts7) Installation(Installation1)
+                    VRMF(9.4.5.1) QMgr(QM.MAYABANK)
+                    Time(2026-09-15T16:15:48.380Z)
+                    RemoteHost(10.217.0.167)
+                    CommentInsert1(DEV.APP.SVRCONN)
+                    CommentInsert2(10.217.0.167)
+
+AMQ9639E: Remote channel 'DEV.APP.SVRCONN' did not specify a CipherSpec.
+
+EXPLANATION:
+Remote channel 'DEV.APP.SVRCONN' did not specify a CipherSpec when the local
+channel expected one to be specified. 
+
+The remote host is '10.217.0.167'. 
+
+The channel did not start.
+ACTION:
+Change the remote channel 'DEV.APP.SVRCONN' on host '10.217.0.167' to specify a
+CipherSpec so that both ends of the channel have matching CipherSpecs.
+----- amqcccxa.c : 4528 -------------------------------------------------------
+09/15/26 16:15:48 - Process(604.274) User(mqm) Program(amqrmppa)
+                    Host(mq-6f5ccb7dcd-r8ts7) Installation(Installation1)
+                    VRMF(9.4.5.1) QMgr(QM.MAYABANK)
+                    Time(2026-09-15T16:15:48.381Z)
+                    ArithInsert1(536909369)
+                    CommentInsert1(DEV.APP.SVRCONN)
+                    CommentInsert2(604)
+                    CommentInsert3(10.217.0.167)
+
+AMQ9999E: Channel 'DEV.APP.SVRCONN' to host '10.217.0.167' ended abnormally.
+
+EXPLANATION:
+The channel program running under process ID 604 for channel 'DEV.APP.SVRCONN'
+ended abnormally. The host name is '10.217.0.167'; in some cases the host name
+cannot be determined and so is shown as '????'.
+ACTION:
+Look at previous error messages for the channel program in the error logs to
+determine the cause of the failure. Note that this message can be excluded
+completely or suppressed by tuning the "ExcludeMessage" or "SuppressMessage"
+attributes under the "QMErrorLog" stanza in qm.ini. Further information can be
+found in the System Administration Guide.
+----- amqrmrsa.c : 643 --------------------------------------------------------
+09/15/26 16:16:03 - Process(604.277) User(mqm) Program(amqrmppa)
+                    Host(mq-6f5ccb7dcd-r8ts7) Installation(Installation1)
+                    VRMF(9.4.5.1) QMgr(QM.MAYABANK)
+                    Time(2026-09-15T16:16:03.401Z)
+                    ArithInsert1(10)
+                    CommentInsert1(10.217.0.167)
+                    CommentInsert2(getnameinfo)
+
+AMQ9788W: Slow DNS lookup for address '10.217.0.167'.
+
+EXPLANATION:
+An attempt to resolve address '10.217.0.167' using the 'getnameinfo' function
+call took 10 seconds to complete. This might indicate a problem with the DNS
+configuration.
+ACTION:
+Ensure that DNS is correctly configured on the local system. 
+
+If the address was an IP address then the slow operation was a reverse DNS
+lookup. Some DNS configurations are not capable of reverse DNS lookups and some
+IP addresses have no valid reverse DNS entries. If the problem persists,
+consider disabling reverse DNS lookups until the issue with the DNS can be
+resolved.
+----- amqcrhna.c : 1187 -------------------------------------------------------
+09/15/26 16:16:03 - Process(604.277) User(mqm) Program(amqrmppa)
+                    Host(mq-6f5ccb7dcd-r8ts7) Installation(Installation1)
+                    VRMF(9.4.5.1) QMgr(QM.MAYABANK)
+                    Time(2026-09-15T16:16:03.403Z)
+                    RemoteHost(10.217.0.167)
+                    CommentInsert1(DEV.APP.SVRCONN)
+                    CommentInsert2(10.217.0.167)
+
+AMQ9639E: Remote channel 'DEV.APP.SVRCONN' did not specify a CipherSpec.
+
+EXPLANATION:
+Remote channel 'DEV.APP.SVRCONN' did not specify a CipherSpec when the local
+channel expected one to be specified. 
+
+The remote host is '10.217.0.167'. 
+
+The channel did not start.
+ACTION:
+Change the remote channel 'DEV.APP.SVRCONN' on host '10.217.0.167' to specify a
+CipherSpec so that both ends of the channel have matching CipherSpecs.
+----- amqcccxa.c : 4528 -------------------------------------------------------
+09/15/26 16:16:03 - Process(604.277) User(mqm) Program(amqrmppa)
+                    Host(mq-6f5ccb7dcd-r8ts7) Installation(Installation1)
+                    VRMF(9.4.5.1) QMgr(QM.MAYABANK)
+                    Time(2026-09-15T16:16:03.403Z)
+                    ArithInsert1(536909369)
+                    CommentInsert1(DEV.APP.SVRCONN)
+                    CommentInsert2(604)
+                    CommentInsert3(10.217.0.167)
+
+AMQ9999E: Channel 'DEV.APP.SVRCONN' to host '10.217.0.167' ended abnormally.
+
+EXPLANATION:
+The channel program running under process ID 604 for channel 'DEV.APP.SVRCONN'
+ended abnormally. The host name is '10.217.0.167'; in some cases the host name
+cannot be determined and so is shown as '????'.
+ACTION:
+Look at previous error messages for the channel program in the error logs to
+determine the cause of the failure. Note that this message can be excluded
+completely or suppressed by tuning the "ExcludeMessage" or "SuppressMessage"
+attributes under the "QMErrorLog" stanza in qm.ini. Further information can be
+found in the System Administration Guide.
+----- amqrmrsa.c : 643 --------------------------------------------------------

@@ -1,0 +1,1 @@
+up{endpoint="metrics", instance="10.217.0.175:9157", job="mq", namespace="mayabank-mq-local", pod="mq-76fd68584b-wgd9s", service="mq"} => 1 @[1789482625.913]

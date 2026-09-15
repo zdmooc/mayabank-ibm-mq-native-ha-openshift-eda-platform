@@ -1,0 +1,20 @@
+Exception in thread "main" com.ibm.msg.client.jms.DetailedJMSSecurityException: JMSWMQ2008: Failed to open MQ queue 'PAYMENT.BACKOUT.Q'.
+JMS attempted to perform an MQOPEN, but IBM MQ reported an error.
+Use the linked exception to determine the cause of this error. Check that the specified queue and queue manager are defined correctly.
+	at com.ibm.msg.client.wmq.common.internal.Reason.reasonToException(Reason.java:645)
+	at com.ibm.msg.client.wmq.common.internal.Reason.createException(Reason.java:229)
+	at com.ibm.msg.client.wmq.internal.WMQMessageConsumer.checkJmqiCallSuccess(WMQMessageConsumer.java:222)
+	at com.ibm.msg.client.wmq.internal.WMQMessageConsumer.checkJmqiCallSuccess(WMQMessageConsumer.java:156)
+	at com.ibm.msg.client.wmq.internal.WMQConsumerShadow.initialize(WMQConsumerShadow.java:1172)
+	at com.ibm.msg.client.wmq.internal.WMQSyncConsumerShadow.initialize(WMQSyncConsumerShadow.java:133)
+	at com.ibm.msg.client.wmq.internal.WMQQueueEnumeration.<init>(WMQQueueEnumeration.java:228)
+	at com.ibm.msg.client.wmq.internal.WMQQueueBrowser.getEnumeration(WMQQueueBrowser.java:162)
+	at com.ibm.msg.client.wmq.internal.WMQQueueBrowser.<init>(WMQQueueBrowser.java:100)
+	at com.ibm.msg.client.wmq.internal.WMQSession.createBrowser(WMQSession.java:933)
+	at com.ibm.msg.client.jms.internal.JmsSessionImpl.createBrowser(JmsSessionImpl.java:827)
+	at com.ibm.mq.jms.MQSession.createBrowser(MQSession.java:360)
+	at fr.mayabank.BackoutTest.run(BackoutTest.java:16)
+	at fr.mayabank.Main.main(Main.java:13)
+Caused by: com.ibm.mq.MQException: JMSCMQ0001: IBM MQ call failed with compcode '2' ('MQCC_FAILED') reason '2035' ('MQRC_NOT_AUTHORIZED').
+	at com.ibm.msg.client.wmq.common.internal.Reason.createException(Reason.java:217)
+	... 12 more

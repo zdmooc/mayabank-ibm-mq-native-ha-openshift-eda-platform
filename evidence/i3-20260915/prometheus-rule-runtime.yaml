@@ -1,0 +1,46 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"monitoring.coreos.com/v1","kind":"PrometheusRule","metadata":{"annotations":{},"labels":{"app.kubernetes.io/part-of":"mayabank-mq"},"name":"mayabank-mq-local-alerts","namespace":"mayabank-mq-local"},"spec":{"groups":[{"name":"mayabank-mq.local","rules":[{"alert":"MQLocalFilesystemFreeLow","annotations":{"description":"QM.MAYABANK filesystem free space is {{ $value }}%.","summary":"IBM MQ local filesystem free space below 20%"},"expr":"ibmmq_qmgr_queue_manager_file_system_free_space_percentage{\n  qmgr=\"QM.MAYABANK\",\n  namespace=\"mayabank-mq-local\"\n} \u003c 20\n","for":"0m","labels":{"environment":"crc","severity":"warning"}},{"alert":"MQLocalMetricsMissing","annotations":{"summary":"IBM MQ metrics endpoint unavailable"},"expr":"absent(\n  up{\n    namespace=\"mayabank-mq-local\",\n    job=\"mq\"\n  } == 1\n)\n","for":"2m","labels":{"environment":"crc","severity":"critical"}}]}]}}
+  creationTimestamp: "2026-09-15T14:33:35Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/part-of: mayabank-mq
+    openshift.io/prometheus-rule-evaluation-scope: leaf-prometheus
+  name: mayabank-mq-local-alerts
+  namespace: mayabank-mq-local
+  resourceVersion: "1248404"
+  uid: cae7d8fb-c885-45b2-ab74-15c8c33ebd88
+spec:
+  groups:
+  - name: mayabank-mq.local
+    rules:
+    - alert: MQLocalFilesystemFreeLow
+      annotations:
+        description: QM.MAYABANK filesystem free space is {{ $value }}%.
+        summary: IBM MQ local filesystem free space below 20%
+      expr: |
+        ibmmq_qmgr_queue_manager_file_system_free_space_percentage{
+          qmgr="QM.MAYABANK",
+          namespace="mayabank-mq-local"
+        } < 20
+      for: 0m
+      labels:
+        environment: crc
+        severity: warning
+    - alert: MQLocalMetricsMissing
+      annotations:
+        summary: IBM MQ metrics endpoint unavailable
+      expr: |
+        absent(
+          up{
+            namespace="mayabank-mq-local",
+            job="mq"
+          } == 1
+        )
+      for: 2m
+      labels:
+        environment: crc
+        severity: critical

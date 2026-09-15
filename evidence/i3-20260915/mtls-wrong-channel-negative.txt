@@ -1,0 +1,17 @@
+Exception in thread "main" com.ibm.msg.client.jms.DetailedJMSSecurityException: JMSWMQ2013: The security authentication was not valid that was supplied for queue manager 'QM.MAYABANK' with connection mode 'Client' and host name 'mq(1414)'.
+Please check if the supplied username and password are correct on the queue manager to which you are connecting.  For further information, review the queue manager error logs and the Securing IBM MQ topic within IBM Documentation.
+	at com.ibm.msg.client.wmq.common.internal.Reason.reasonToException(Reason.java:645)
+	at com.ibm.msg.client.wmq.common.internal.Reason.createException(Reason.java:229)
+	at com.ibm.msg.client.wmq.internal.WMQConnection.<init>(WMQConnection.java:520)
+	at com.ibm.msg.client.wmq.factories.WMQConnectionFactory.createV7ProviderConnection(WMQConnectionFactory.java:9710)
+	at com.ibm.msg.client.wmq.factories.WMQConnectionFactory.createProviderConnection(WMQConnectionFactory.java:8928)
+	at com.ibm.msg.client.jms.admin.JmsConnectionFactoryImpl._createConnection(JmsConnectionFactoryImpl.java:322)
+	at com.ibm.msg.client.jms.admin.JmsConnectionFactoryImpl.createConnection(JmsConnectionFactoryImpl.java:242)
+	at com.ibm.mq.jms.MQConnectionFactory.createCommonConnection(MQConnectionFactory.java:6680)
+	at com.ibm.mq.jms.MQConnectionFactory.createConnection(MQConnectionFactory.java:6709)
+	at fr.mayabank.Mq.connect(Mq.java:31)
+	at fr.mayabank.PaymentOrder.run(PaymentOrder.java:10)
+	at fr.mayabank.Main.main(Main.java:14)
+Caused by: com.ibm.mq.MQException: JMSCMQ0001: IBM MQ call failed with compcode '2' ('MQCC_FAILED') reason '2035' ('MQRC_NOT_AUTHORIZED').
+	at com.ibm.msg.client.wmq.common.internal.Reason.createException(Reason.java:217)
+	... 10 more

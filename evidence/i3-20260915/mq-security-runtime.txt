@@ -1,0 +1,97 @@
+===== MQ SECURITY RUNTIME =====
+5724-H72 (C) Copyright IBM Corp. 1994, 2026.
+Starting MQSC for queue manager QM.MAYABANK.
+
+
+     1 : DISPLAY QMGR SSLKEYR CERTLABL
+AMQ8408I: Display Queue Manager details.
+   QMNAME(QM.MAYABANK)                     CERTLABL(mayabank-server)
+   SSLKEYR(/run/runmqserver/tls/key)    
+     2 : DISPLAY CHANNEL('PAY.ORDER.SVRCONN') CHLTYPE SSLCAUTH SSLCIPH
+AMQ8414I: Display Channel details.
+   CHANNEL(PAY.ORDER.SVRCONN)              CHLTYPE(SVRCONN)
+   SSLCAUTH(REQUIRED)                      SSLCIPH(ANY_TLS13_OR_HIGHER)
+     3 : DISPLAY CHANNEL('PAY.PROC.SVRCONN') CHLTYPE SSLCAUTH SSLCIPH
+AMQ8414I: Display Channel details.
+   CHANNEL(PAY.PROC.SVRCONN)               CHLTYPE(SVRCONN)
+   SSLCAUTH(REQUIRED)                      SSLCIPH(ANY_TLS13_OR_HIGHER)
+     4 : DISPLAY CHLAUTH('PAY.ORDER.SVRCONN') ALL
+AMQ8878I: Display channel authentication record details.
+   CHLAUTH(PAY.ORDER.SVRCONN)              TYPE(SSLPEERMAP)
+   DESCR( )                                CUSTOM( )
+   SSLPEER(CN=payment-order,O=MayaBank)    SSLCERTI( )
+   ADDRESS( )                              MCAUSER(paymentorder)
+   USERSRC(MAP)                            CHCKCLNT(ASQMGR)
+   ALTDATE(2026-09-15)                     ALTTIME(15.49.17)
+AMQ8878I: Display channel authentication record details.
+   CHLAUTH(PAY.ORDER.SVRCONN)              TYPE(SSLPEERMAP)
+   DESCR( )                                CUSTOM( )
+   SSLPEER(CN=*,O=MayaBank)                SSLCERTI( )
+   ADDRESS( )                              USERSRC(NOACCESS)
+   WARN(NO)                                ALTDATE(2026-09-15)
+   ALTTIME(15.49.17)                    
+     5 : DISPLAY CHLAUTH('PAY.PROC.SVRCONN') ALL
+AMQ8878I: Display channel authentication record details.
+   CHLAUTH(PAY.PROC.SVRCONN)               TYPE(SSLPEERMAP)
+   DESCR( )                                CUSTOM( )
+   SSLPEER(CN=payment-processing,O=MayaBank)
+   SSLCERTI( )                             ADDRESS( )
+   MCAUSER(paymentproc)                    USERSRC(MAP)
+   CHCKCLNT(ASQMGR)                        ALTDATE(2026-09-15)
+   ALTTIME(15.49.17)                    
+AMQ8878I: Display channel authentication record details.
+   CHLAUTH(PAY.PROC.SVRCONN)               TYPE(SSLPEERMAP)
+   DESCR( )                                CUSTOM( )
+   SSLPEER(CN=*,O=MayaBank)                SSLCERTI( )
+   ADDRESS( )                              USERSRC(NOACCESS)
+   WARN(NO)                                ALTDATE(2026-09-15)
+   ALTTIME(15.49.17)                    
+     6 : DISPLAY AUTHREC PRINCIPAL('paymentorder') ALL
+AMQ8864I: Display authority record details.
+   PROFILE(PAYMENT.RESPONSE.Q)             ENTITY(paymentorder)
+   ENTTYPE(PRINCIPAL)                      OBJTYPE(QUEUE)
+   AUTHLIST(BROWSE,GET,INQ)             
+AMQ8864I: Display authority record details.
+   PROFILE(self)                           ENTITY(paymentorder)
+   ENTTYPE(PRINCIPAL)                      OBJTYPE(QMGR)
+   AUTHLIST(CONNECT,INQ)                
+AMQ8864I: Display authority record details.
+   PROFILE(PAYMENT.REQUEST.Q)              ENTITY(paymentorder)
+   ENTTYPE(PRINCIPAL)                      OBJTYPE(QUEUE)
+   AUTHLIST(INQ,PUT)                    
+AMQ8864I: Display authority record details.
+   PROFILE(@class)                         ENTITY(paymentorder)
+   ENTTYPE(PRINCIPAL)                      OBJTYPE(QUEUE)
+   AUTHLIST(NONE)                       
+AMQ8864I: Display authority record details.
+   PROFILE(@class)                         ENTITY(paymentorder)
+   ENTTYPE(PRINCIPAL)                      OBJTYPE(QMGR)
+   AUTHLIST(NONE)                       
+     7 : DISPLAY AUTHREC PRINCIPAL('paymentproc') ALL
+AMQ8864I: Display authority record details.
+   PROFILE(PAYMENT.RESPONSE.Q)             ENTITY(paymentproc)
+   ENTTYPE(PRINCIPAL)                      OBJTYPE(QUEUE)
+   AUTHLIST(INQ,PUT)                    
+AMQ8864I: Display authority record details.
+   PROFILE(self)                           ENTITY(paymentproc)
+   ENTTYPE(PRINCIPAL)                      OBJTYPE(QMGR)
+   AUTHLIST(CONNECT,INQ)                
+AMQ8864I: Display authority record details.
+   PROFILE(PAYMENT.REQUEST.Q)              ENTITY(paymentproc)
+   ENTTYPE(PRINCIPAL)                      OBJTYPE(QUEUE)
+   AUTHLIST(BROWSE,GET,INQ)             
+AMQ8864I: Display authority record details.
+   PROFILE(PAYMENT.BACKOUT.Q)              ENTITY(paymentproc)
+   ENTTYPE(PRINCIPAL)                      OBJTYPE(QUEUE)
+   AUTHLIST(INQ,PUT)                    
+AMQ8864I: Display authority record details.
+   PROFILE(@class)                         ENTITY(paymentproc)
+   ENTTYPE(PRINCIPAL)                      OBJTYPE(QUEUE)
+   AUTHLIST(NONE)                       
+AMQ8864I: Display authority record details.
+   PROFILE(@class)                         ENTITY(paymentproc)
+   ENTTYPE(PRINCIPAL)                      OBJTYPE(QMGR)
+   AUTHLIST(NONE)                       
+7 MQSC commands read.
+No commands have a syntax error.
+All valid MQSC commands were processed.
