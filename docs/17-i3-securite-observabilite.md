@@ -8,7 +8,7 @@ Passer d'un POC fonctionnel à un socle présentable comme cible de production :
 
 Le fichier `deploy/security/qm-prod-security.yaml` définit la cible :
 
-- deux channels SVRCONN distincts : `PAYMENT.ORDER.SVRCONN` et `PAYMENT.PROCESSING.SVRCONN` ;
+- deux channels SVRCONN distincts et compatibles avec la limite IBM MQ de 20 caractères : `PAY.ORDER.SVRCONN` et `PAY.PROC.SVRCONN` ;
 - `SSLCAUTH(REQUIRED)` et TLS 1.3 ;
 - mapping certificat -> identité MQ avec `CHLAUTH` ;
 - `paymentorder` : PUT sur REQUEST, GET/BROWSE sur RESPONSE ;
