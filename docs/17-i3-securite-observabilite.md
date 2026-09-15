@@ -17,15 +17,37 @@ Le fichier `deploy/security/qm-prod-security.yaml` définit la cible :
 
 Les certificats et clés privées ne sont jamais versionnés. Le manifeste Native HA I4 référence des Secrets Kubernetes à créer depuis une PKI de lab ou, en cible, depuis Vault/External Secrets/cert-manager selon la plateforme.
 
-### Tests négatifs attendus
+### Validation runtime CRC — 15/09/2026
 
-1. certificat absent -> connexion refusée ;
-2. certificat signé par une CA non approuvée -> refus ;
-3. certificat `payment-order` sur le channel du processeur -> refus ou droits insuffisants ;
-4. `payment-order` tente un GET sur REQUEST -> refus OAM ;
-5. certificat expiré/révoqué -> refus selon la PKI mise en place.
+Validé sur OpenShift CRC mono-nœud avec IBM MQ Developer 9.4.5.1 :
 
-Conserver les reason codes MQ et les événements côté queue manager sans publier les secrets.
+- repository TLS généré et actif avec `CERTLABL(mayabank-server)` et `SSLKEYR(/run/runmqserver/tls/key)` ;
+- `PAY.ORDER.SVRCONN` et `PAY.PROC.SVRCONN` en `SSLCAUTH(REQUIRED)` / `ANY_TLS13_OR_HIGHER` ;
+- CHLAUTH certificat -> `paymentorder` / `paymentproc` ;
+- OAM least privilege séparé producteur / processeur ;
+- parcours mTLS positif `payment-order -> MQ -> payment-processing -> réponse` ;
+- mauvais certificat/channel refusé avec `MQRC_NOT_AUTHORIZED (2035)` ;
+- absence de certificat client refusée lors de la négociation du channel ;
+- accès OAM interdit à `PAYMENT.BACKOUT.Q` depuis l'identité `paymentorder` avec `2035`.
+
+Preuves : `evidence/i3-20260915/mtls-*.txt` et `evidence/i3-20260915/mq-security-runtime.txt`.
+
+### Tests complémentaires non exécutés
+
+- certificat signé par une CA non approuvée ;
+- certificat expiré / révocation CRL ou OCSP.
+
+Ces cas restent des extensions de la matrice PKI et ne doivent pas être présentés comme validés runtime.
+
+## Compatibilité canal local I1/I2
+
+Le montage d'une identité TLS dans l'image IBM Developer active aussi TLS sur `DEV.APP.SVRCONN`. Pour préserver les tests historiques locaux I1/I2 en authentification utilisateur/mot de passe, le ConfigMap applique explicitement :
+
+```mqsc
+ALTER CHANNEL('DEV.APP.SVRCONN') CHLTYPE(SVRCONN) SSLCIPH(' ') SSLCAUTH(OPTIONAL)
+```
+
+Le parcours password request/reply a été revalidé après cette correction. Cette exception est locale au POC ; les channels applicatifs cibles I3 restent en mTLS obligatoire.
 
 ## Observabilité
 
@@ -34,7 +56,7 @@ Le QueueManager I4 active l'endpoint Prometheus de l'Operator et le `ServiceMoni
 - `deploy/observability/mq-prometheus-rules.yaml` ;
 - `deploy/observability/grafana-dashboard-mq.yaml`.
 
-Signaux principaux :
+Signaux cibles de production :
 
 - profondeur de file ;
 - âge du message le plus ancien ;
@@ -45,18 +67,37 @@ Signaux principaux :
 - stockage/logs ;
 - état Native HA et changements de rôle.
 
-### Important sur les noms de métriques
+### Inventaire runtime CRC
 
-Les règles utilisent les noms du collecteur Prometheus IBM MQ couramment exposés (`ibmmq_queue_depth`, `ibmmq_queue_oldest_message_age`, `ibmmq_qmgr_status`). La documentation IBM précise que les noms disponibles peuvent varier selon version/collecteur. Avant d'activer les alertes en production, inventorier l'endpoint réel :
+L'endpoint métriques local a été inventorié et exposait 88 métriques `ibmmq_qmgr_*`. Le scrape User Workload Monitoring est validé avec `up == 1`.
 
-```bash
-oc -n mayabank-mq-prod get pods
-oc -n mayabank-mq-prod exec -it <pod-mq> -- sh -c 'curl -ks https://127.0.0.1:9157/metrics | grep "^ibmmq_" | head -100'
-```
+Exemples réellement observés :
 
-Adapter les règles uniquement après ce contrôle et conserver la liste des métriques dans `evidence/`.
+- `ibmmq_qmgr_queue_manager_file_system_free_space_percentage` ;
+- `ibmmq_qmgr_log_file_system_free_space_percentage` ;
+- `ibmmq_qmgr_log_write_latency_seconds` ;
+- `ibmmq_qmgr_mqput_mqput1_total` ;
+- `ibmmq_qmgr_destructive_get_total` ;
+- `ibmmq_qmgr_failed_mqconn_mqconnx_total` ;
+- métriques CPU/RAM du queue manager.
 
-## Runbook minimal
+Preuves : `evidence/i3-20260915/mq-metric-names.txt`, `mq-metrics-raw.txt`, `prometheus-mq-up.txt` et `prometheus-ibmmq-count.txt`.
+
+### Limite queue-level sur CRC
+
+Le endpoint intégré testé ne fournit pas les séries `ibmmq_queue_depth`, `ibmmq_queue_oldest_message_age` ni `ibmmq_qmgr_status` attendues par le dashboard de référence. Le dashboard `deploy/observability/grafana-dashboard-mq.yaml` reste donc une **référence de cible**, non une preuve runtime CRC.
+
+Pour obtenir la profondeur/âge par queue dans ce lab, ajouter un collecteur compatible tel que l'exporter des `mq-metric-samples`, puis adapter les requêtes après inventaire des noms réellement exposés.
+
+### Alerte testée
+
+Une règle locale de test sur l'espace filesystem du queue manager a été évaluée par Prometheus et observée en état firing. Preuves :
+
+- `evidence/i3-20260915/prometheus-filesystem-free.txt` ;
+- `evidence/i3-20260915/prometheus-alert-firing.txt` ;
+- `evidence/i3-20260915/prometheus-rule-runtime.yaml`.
+
+## Runbooks
 
 ### Queue qui monte
 
@@ -76,31 +117,52 @@ Adapter les règles uniquement après ce contrôle et conserver la liste des mé
 5. rejouer uniquement avec un outil contrôlé, allow-list de destinations et audit ;
 6. vérifier absence de doublon via idempotence métier.
 
-### Connexion mTLS refusée
+Le parcours DLQ/rejeu contrôlé a été validé dans les itérations précédentes du POC.
 
-1. vérifier expiration et chaîne CA ;
-2. vérifier DN/SAN attendu ;
-3. contrôler CHLAUTH puis OAM ;
-4. contrôler heure système ;
-5. ne jamais désactiver CHLAUTH ou `SSLCAUTH(REQUIRED)` comme contournement de production.
+### Panne MQ / reconnexion applicative
 
-### Stockage MQ proche de saturation
+Le runbook a été exécuté sur CRC :
 
-1. mesurer PVC, filesystem et croissance recovery logs ;
-2. identifier queues accumulées et transactions longues ;
-3. vérifier capacité/expansion de la StorageClass ;
-4. augmenter selon procédure contrôlée ;
-5. ne pas supprimer de fichiers sous `/var/mqm` manuellement.
+1. Argo CD self-heal suspendu temporairement ;
+2. `deployment/mq` réduit de 1 à 0 ;
+3. le client IBM MQ a détecté la rupture et lancé les tentatives de reconnexion ;
+4. MQ restauré de 0 à 1 ;
+5. `Completed reconnection` observé côté client ;
+6. nouveau paiement request/reply réussi après reconnexion ;
+7. Argo CD self-heal restauré.
 
-## Critère de clôture I3
+Preuves : `evidence/i3-20260915/mq-outage-*.txt` et `password-channel-regression.txt`.
 
-`RUNTIME_VALIDATED` seulement après :
+### Limite readiness identifiée
 
-- handshake mTLS positif + tests négatifs ;
-- preuve des droits séparés producteur/consommateur ;
-- endpoint métriques inventorié ;
-- dashboard alimenté ;
-- au moins une alerte testée ;
-- runbook DLQ et panne MQ déroulé en lab.
+Pendant la reconnexion transparente gérée par le client IBM MQ, le pod `payment-processing` est resté `Ready`. Le marqueur local est supprimé uniquement lorsqu'une `JMSException` remonte au code applicatif ; la reconnexion automatique peut masquer temporairement cet état intermédiaire.
 
-Tant que ces preuves ne sont pas exécutées, le statut reste `DESIGNED / IMPLEMENTED / READY_TO_RUN`.
+Conclusion :
+
+- readiness initiale liée à une connexion MQ authentifiée : validée ;
+- reconnexion automatique après panne MQ : validée ;
+- readiness dynamique reflétant immédiatement toute panne MQ : **non validée**, amélioration à prévoir via health-check actif ou état explicite de connexion/reconnexion.
+
+## Statut I3
+
+### RUNTIME_VALIDATED sur CRC
+
+- mTLS positif ;
+- CHLAUTH et OAM least privilege ;
+- tests négatifs principaux ;
+- régression password I1/I2 ;
+- endpoint métriques et scrape UWM ;
+- inventaire des métriques ;
+- une alerte Prometheus réellement firing ;
+- panne MQ, reconnexion automatique et paiement post-reprise ;
+- DLQ / backout / rejeu contrôlé issus des preuves précédentes du POC.
+
+### RUNTIME PENDING / cible uniquement
+
+- dashboard Grafana réellement alimenté avec les métriques queue-level ;
+- exporter queue-level dédié ;
+- CA non approuvée et expiration/révocation PKI ;
+- readiness dynamique pendant reconnexion transparente ;
+- Native HA multi-worker, qui relève de I4 et ne peut pas être revendiqué sur CRC mono-nœud.
+
+I3 peut être présenté comme **sécurité + observabilité de base + résilience applicative runtime validées sur CRC**, avec les limites ci-dessus explicitement documentées. Ne pas présenter le dashboard queue-level ni Native HA comme validés tant qu'ils n'ont pas été exécutés sur un environnement adapté.
