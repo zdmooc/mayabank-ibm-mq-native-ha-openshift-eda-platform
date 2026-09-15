@@ -1,0 +1,329 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mtls-processing-positive
+  namespace: mayabank-mq-local
+  labels:
+    mayabank-role: mq-client
+    app.kubernetes.io/part-of: mayabank-mq
+    app.kubernetes.io/component: mtls-probe
+spec:
+  restartPolicy: Never
+  serviceAccountName: payments
+  automountServiceAccountToken: false
+  enableServiceLinks: false
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: payments
+      image: image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0
+      imagePullPolicy: Always
+      args: [process]
+      env:
+        - name: MQ_HOST
+          value: mq
+        - name: MQ_PORT
+          value: "1414"
+        - name: MQ_QUEUE_MANAGER
+          value: QM.MAYABANK
+        - name: MQ_CHANNEL
+          value: PAYMENT.PROCESSING.SVRCONN
+        - name: MQ_AUTH_MODE
+          value: mtls
+        - name: MQ_TLS_KEYSTORE
+          value: /etc/mayabank/tls/client.p12
+        - name: MQ_TLS_TRUSTSTORE
+          value: /etc/mayabank/tls/trust.p12
+        - name: MQ_TLS_KEYSTORE_PASSWORD_FILE
+          value: /etc/mayabank/tls/keystore-password
+        - name: MQ_TLS_TRUSTSTORE_PASSWORD_FILE
+          value: /etc/mayabank/tls/truststore-password
+        - name: MQ_SSL_CIPHER_SUITE
+          value: TLS_AES_256_GCM_SHA384
+        - name: DB_PASSWORD_FILE
+          value: /etc/mayabank/db/password
+        - name: READY_FILE
+          value: /tmp/mayabank-mq-ready
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+      securityContext:
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: [ALL]
+      volumeMounts:
+        - name: tls
+          mountPath: /etc/mayabank/tls
+          readOnly: true
+        - name: db-credentials
+          mountPath: /etc/mayabank/db
+          readOnly: true
+        - name: tmp
+          mountPath: /tmp
+  volumes:
+    - name: tls
+      secret:
+        secretName: payment-processing-mtls
+    - name: db-credentials
+      secret:
+        secretName: payments-db-credentials
+        items:
+          - key: password
+            path: password
+    - name: tmp
+      emptyDir: {}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mtls-order-positive
+  namespace: mayabank-mq-local
+  labels:
+    app.kubernetes.io/part-of: mayabank-mq
+    app.kubernetes.io/component: mtls-probe
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 120
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        mayabank-role: mq-client
+    spec:
+      restartPolicy: Never
+      serviceAccountName: payments
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: payments
+          image: image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0
+          imagePullPolicy: Always
+          args: [send]
+          env:
+            - name: MQ_HOST
+              value: mq
+            - name: MQ_PORT
+              value: "1414"
+            - name: MQ_QUEUE_MANAGER
+              value: QM.MAYABANK
+            - name: MQ_CHANNEL
+              value: PAYMENT.ORDER.SVRCONN
+            - name: MQ_AUTH_MODE
+              value: mtls
+            - name: MQ_TLS_KEYSTORE
+              value: /etc/mayabank/tls/client.p12
+            - name: MQ_TLS_TRUSTSTORE
+              value: /etc/mayabank/tls/trust.p12
+            - name: MQ_TLS_KEYSTORE_PASSWORD_FILE
+              value: /etc/mayabank/tls/keystore-password
+            - name: MQ_TLS_TRUSTSTORE_PASSWORD_FILE
+              value: /etc/mayabank/tls/truststore-password
+            - name: MQ_SSL_CIPHER_SUITE
+              value: TLS_AES_256_GCM_SHA384
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: tls
+              mountPath: /etc/mayabank/tls
+              readOnly: true
+      volumes:
+        - name: tls
+          secret:
+            secretName: payment-order-mtls
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mtls-wrong-channel-negative
+  namespace: mayabank-mq-local
+  labels:
+    app.kubernetes.io/part-of: mayabank-mq
+    app.kubernetes.io/component: mtls-probe
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 60
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        mayabank-role: mq-client
+    spec:
+      restartPolicy: Never
+      serviceAccountName: payments
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: payments
+          image: image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0
+          imagePullPolicy: Always
+          args: [send]
+          env:
+            - name: MQ_HOST
+              value: mq
+            - name: MQ_PORT
+              value: "1414"
+            - name: MQ_QUEUE_MANAGER
+              value: QM.MAYABANK
+            - name: MQ_CHANNEL
+              value: PAYMENT.PROCESSING.SVRCONN
+            - name: MQ_AUTH_MODE
+              value: mtls
+            - name: MQ_TLS_KEYSTORE
+              value: /etc/mayabank/tls/client.p12
+            - name: MQ_TLS_TRUSTSTORE
+              value: /etc/mayabank/tls/trust.p12
+            - name: MQ_TLS_KEYSTORE_PASSWORD_FILE
+              value: /etc/mayabank/tls/keystore-password
+            - name: MQ_TLS_TRUSTSTORE_PASSWORD_FILE
+              value: /etc/mayabank/tls/truststore-password
+            - name: MQ_SSL_CIPHER_SUITE
+              value: TLS_AES_256_GCM_SHA384
+          volumeMounts:
+            - name: tls
+              mountPath: /etc/mayabank/tls
+              readOnly: true
+      volumes:
+        - name: tls
+          secret:
+            secretName: payment-order-mtls
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mtls-no-client-cert-negative
+  namespace: mayabank-mq-local
+  labels:
+    app.kubernetes.io/part-of: mayabank-mq
+    app.kubernetes.io/component: mtls-probe
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 60
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        mayabank-role: mq-client
+    spec:
+      restartPolicy: Never
+      serviceAccountName: payments
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: payments
+          image: image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0
+          imagePullPolicy: Always
+          args: [send]
+          env:
+            - name: MQ_HOST
+              value: mq
+            - name: MQ_PORT
+              value: "1414"
+            - name: MQ_QUEUE_MANAGER
+              value: QM.MAYABANK
+            - name: MQ_CHANNEL
+              value: PAYMENT.ORDER.SVRCONN
+            - name: MQ_AUTH_MODE
+              value: mtls
+            - name: MQ_TLS_KEYSTORE
+              value: /etc/mayabank/tls/client.p12
+            - name: MQ_TLS_TRUSTSTORE
+              value: /etc/mayabank/tls/trust.p12
+            - name: MQ_TLS_KEYSTORE_PASSWORD_FILE
+              value: /etc/mayabank/tls/keystore-password
+            - name: MQ_TLS_TRUSTSTORE_PASSWORD_FILE
+              value: /etc/mayabank/tls/truststore-password
+            - name: MQ_SSL_CIPHER_SUITE
+              value: TLS_AES_256_GCM_SHA384
+          volumeMounts:
+            - name: tls
+              mountPath: /etc/mayabank/tls
+              readOnly: true
+      volumes:
+        - name: tls
+          secret:
+            secretName: payment-order-mtls
+            items:
+              - key: trust.p12
+                path: client.p12
+              - key: trust.p12
+                path: trust.p12
+              - key: truststore-password
+                path: keystore-password
+              - key: truststore-password
+                path: truststore-password
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mtls-oam-negative
+  namespace: mayabank-mq-local
+  labels:
+    app.kubernetes.io/part-of: mayabank-mq
+    app.kubernetes.io/component: mtls-probe
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 60
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        mayabank-role: mq-client
+    spec:
+      restartPolicy: Never
+      serviceAccountName: payments
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      containers:
+        - name: payments
+          image: image-registry.openshift-image-registry.svc:5000/mayabank-mq-build/payments:0.2.0
+          imagePullPolicy: Always
+          args: [backout-test]
+          env:
+            - name: MQ_HOST
+              value: mq
+            - name: MQ_PORT
+              value: "1414"
+            - name: MQ_QUEUE_MANAGER
+              value: QM.MAYABANK
+            - name: MQ_CHANNEL
+              value: PAYMENT.ORDER.SVRCONN
+            - name: MQ_AUTH_MODE
+              value: mtls
+            - name: MQ_TLS_KEYSTORE
+              value: /etc/mayabank/tls/client.p12
+            - name: MQ_TLS_TRUSTSTORE
+              value: /etc/mayabank/tls/trust.p12
+            - name: MQ_TLS_KEYSTORE_PASSWORD_FILE
+              value: /etc/mayabank/tls/keystore-password
+            - name: MQ_TLS_TRUSTSTORE_PASSWORD_FILE
+              value: /etc/mayabank/tls/truststore-password
+            - name: MQ_SSL_CIPHER_SUITE
+              value: TLS_AES_256_GCM_SHA384
+          volumeMounts:
+            - name: tls
+              mountPath: /etc/mayabank/tls
+              readOnly: true
+      volumes:
+        - name: tls
+          secret:
+            secretName: payment-order-mtls
