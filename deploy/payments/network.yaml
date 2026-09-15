@@ -10,6 +10,8 @@ kind: Service
 metadata:
   name: mq
   namespace: mayabank-mq-local
+  labels:
+    app: mayabank-mq
 spec:
   selector:
     app: mayabank-mq
@@ -17,6 +19,9 @@ spec:
     - name: mq
       port: 1414
       targetPort: 1414
+    - name: metrics
+      port: 9157
+      targetPort: 9157
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -36,6 +41,25 @@ spec:
       ports:
         - protocol: TCP
           port: 1414
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-prometheus-to-mq-metrics
+  namespace: mayabank-mq-local
+spec:
+  podSelector:
+    matchLabels:
+      app: mayabank-mq
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: openshift-user-workload-monitoring
+      ports:
+        - protocol: TCP
+          port: 9157
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -69,3 +93,19 @@ spec:
           port: 5353
         - protocol: TCP
           port: 5353
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mayabank-mq-metrics
+  namespace: mayabank-mq-local
+spec:
+  selector:
+    matchLabels:
+      app: mayabank-mq
+  endpoints:
+    - port: metrics
+      path: /metrics
+      scheme: http
+      interval: 30s
+      scrapeTimeout: 10s
