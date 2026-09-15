@@ -1,0 +1,24 @@
+NAME                                      READY   STATUS      RESTARTS   AGE     IP             NODE   NOMINATED NODE   READINESS GATES
+pod/mq-fbd8846c7-725vw                    1/1     Running     0          55m     10.217.0.94    crc    <none>           <none>
+pod/payment-auth-negative-5lqqx-rqn8s     0/1     Error       0          45m     10.217.0.97    crc    <none>           <none>
+pod/payment-auth-negative-k2jxk-892pc     0/1     Completed   0          2m      10.217.0.111   crc    <none>           <none>
+pod/payment-auth-negative-q4prw-mlxpl     0/1     Completed   0          23s     10.217.0.120   crc    <none>           <none>
+pod/payment-auth-negative-rmdmw-sj8p2     0/1     Completed   0          31m     10.217.0.109   crc    <none>           <none>
+pod/payment-auth-negative-v8jhh-r9hqt     0/1     Completed   0          36m     10.217.0.99    crc    <none>           <none>
+pod/payment-idempotency-24gfx-87fph       0/1     Completed   0          77s     10.217.0.115   crc    <none>           <none>
+pod/payment-idempotency-5jgl4-smp9l       0/1     Completed   0          58s     10.217.0.118   crc    <none>           <none>
+pod/payment-idempotency-j5kfc-pdm6v       0/1     Completed   0          32m     10.217.0.103   crc    <none>           <none>
+pod/payment-idempotency-k6p54-glkml       0/1     Error       0          43m     10.217.0.98    crc    <none>           <none>
+pod/payment-idempotency-l4k9w-rmlzl       0/1     Completed   0          95s     10.217.0.113   crc    <none>           <none>
+pod/payment-idempotency-v2zn6-zxcbl       0/1     Completed   0          32m     10.217.0.107   crc    <none>           <none>
+pod/payment-idempotency-xkbns-brwjn       0/1     Completed   0          32m     10.217.0.101   crc    <none>           <none>
+pod/payment-order-ct6dr-fpkjq             0/1     Completed   0          12s     10.217.0.122   crc    <none>           <none>
+pod/payment-order-hngsq-xbftp             0/1     Completed   0          35m     10.217.0.100   crc    <none>           <none>
+pod/payment-order-r75t8-c6xs9             0/1     Completed   0          31m     10.217.0.110   crc    <none>           <none>
+pod/payment-order-wf5wn-f84zb             0/1     Completed   0          109s    10.217.0.112   crc    <none>           <none>
+pod/payment-processing-74dc499f8d-lrj56   1/1     Running     0          31s     10.217.0.119   crc    <none>           <none>
+pod/payments-db-5dc7f4d6bd-zbzsl          1/1     Running     1          3d19h   10.217.0.89    crc    <none>           <none>
+
+NAME                                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS                   VOLUMEATTRIBUTESCLASS   AGE     VOLUMEMODE
+persistentvolumeclaim/mq-data            Bound    pvc-e6c25c86-309d-4454-ac0d-c7c2100b4971   79Gi       RWO            crc-csi-hostpath-provisioner   <unset>                 6d1h    Filesystem
+persistentvolumeclaim/payments-db-data   Bound    pvc-94f5a27f-6e28-4d37-8b1a-255887898303   79Gi       RWO            crc-csi-hostpath-provisioner   <unset>                 3d19h   Filesystem

@@ -1,0 +1,18 @@
+evidence/i1-20260915/idempotency-verify.log:OBSERVED outcome=NEW deliveryCount=1 paymentId=10966a40-b53b-ded7-0213-b166b5e20dd4
+evidence/i1-20260915/idempotency-verify.log:OBSERVED outcome=DUPLICATE deliveryCount=1 paymentId=10966a40-b53b-ded7-0213-b166b5e20dd4
+evidence/i1-20260915/idempotency-verify.log:OBSERVED outcome=CONFLICT deliveryCount=1 paymentId=10966a40-b53b-ded7-0213-b166b5e20dd4
+evidence/i1-20260915/idempotency-verify.log:PASS: idempotency scenario=baseline single unchanged effect; paymentId=10966a40-b53b-ded7-0213-b166b5e20dd4
+evidence/i1-20260915/idempotency-verify.log:OBSERVED outcome=DUPLICATE deliveryCount=1 paymentId=10966a40-b53b-ded7-0213-b166b5e20dd4
+evidence/i1-20260915/idempotency-verify.log:PASS: idempotency scenario=after-restart single unchanged effect; paymentId=10966a40-b53b-ded7-0213-b166b5e20dd4
+evidence/i1-20260915/idempotency-verify.log:OBSERVED outcome=DUPLICATE deliveryCount=2 paymentId=abc6d9ec-8fb2-4ba0-6b92-467eefc07069
+evidence/i1-20260915/idempotency-verify.log:PASS: idempotency scenario=crash single unchanged effect; paymentId=abc6d9ec-8fb2-4ba0-6b92-467eefc07069
+evidence/i1-20260915/idempotency-verify.log:CRASH_AFTER_DB_COMMIT paymentId=abc6d9ec-8fb2-4ba0-6b92-467eefc07069
+evidence/i1-20260915/idempotency-verify.log:PASS: wrong password rejected (MQRC 2035)
+evidence/i1-20260915/idempotency-verify.log:PASS: authenticated JMS request/reply paymentId=7035365a-2e78-445f-ad53-de61f84aa2f1
+evidence/i1-20260915/idempotency-verify.log:READY: authenticated MQ connection; simulation only
+evidence/i1-20260915/idempotency-verify.log:PASS lot paiement : refus mauvais mot de passe puis demande/réponse JMS.
+evidence/i1-20260915/idempotency-verify.log:PASS lot idempotence : doublon, conflit, redémarrage, crash DB/MQ et effet unique ; injection désactivée.
+evidence/i1-20260915/payments-verify.log:PASS: wrong password rejected (MQRC 2035)
+evidence/i1-20260915/payments-verify.log:PASS: authenticated JMS request/reply paymentId=69932dcb-9a1b-4688-9c50-5b81850d9eaa
+evidence/i1-20260915/payments-verify.log:READY: authenticated MQ connection; simulation only
+evidence/i1-20260915/payments-verify.log:PASS lot paiement : refus mauvais mot de passe puis demande/réponse JMS.

@@ -1,0 +1,7 @@
+PASS: wrong password rejected (MQRC 2035)
+ACCEPTED paymentId=69932dcb-9a1b-4688-9c50-5b81850d9eaa
+PASS: authenticated JMS request/reply paymentId=69932dcb-9a1b-4688-9c50-5b81850d9eaa
+READY: authenticated MQ connection; simulation only
+NEW paymentId=914604f2-61fe-4e26-bf18-4886c3d763d3
+NEW paymentId=69932dcb-9a1b-4688-9c50-5b81850d9eaa
+PASS lot paiement : refus mauvais mot de passe puis demande/réponse JMS.
